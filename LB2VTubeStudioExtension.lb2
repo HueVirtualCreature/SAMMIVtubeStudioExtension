@@ -21,12 +21,12 @@ Written by Hue, the Centipede Youkai
   <div class="column">
     <p>Created by Hue, the Centipede Youkai</p> 
     <a href="https://twitter.com/Hue_SwordDevil">Twitter</a>
+    <a href="https://github.com/HueVirtualCreature/Lioranboard2VTubeStudioExtension">GitHub</a>
     <p>You may access the commands under Extension Commands > Transmitter > VTubeStudio*</p>
     <p>Please keep in mind that the Transmitter MUST BE OPEN in order for any of its commands to work.</p>
 	<p>Status: Connected!</p>
-	<button onclick="requestRefresh();">Refresh Model and Hotkey Lists</button>
-	{/* <button onclick="requestRefresh();">Get Current Model Data</button>
-	<button onclick="requestRefresh();">Get Current Model Position</button> */}
+	<button class="btn btn-primary btn-sm" onclick="requestVtubeStudioAuthenticationToken();">Authenticate with VTubeStudio</button>
+	<button class="btn btn-primary btn-sm" onclick="requestRefresh();">Refresh Model and Hotkey Lists</button>
   </div>
 </div>
 
@@ -38,7 +38,7 @@ LB.extCommand("VtubeStudio - Move Model",3355443, 52, {
 	positionY: ["PositionY", 14, "0"],
 	size: ["Size", 14, "1"],
 	rotation: ["Rotation", 14, "0"],
-	time: ["Time", 14, "0.2"],
+	time: ["Time (0-2)", 14, "0.2"],
 	relative: ["Relative Values", 2, false],
 	dev_note: ["Dev Note", 0, "This one doesn't work super \nwell mainly because you have to \ndo a lot of trial and error to get \nthe numbers just right....\ngood luck! Changing the \ncontents of this textbox \ndoes nothing, by the way."]
  })
@@ -150,6 +150,7 @@ function interpretResponse(responseData) {
 		case "AuthenticationTokenResponse":
 			window.VTUBESTUDIO_AUTHTOKEN = responseData.data.authenticationToken;
 			//I assume that we want to authenticate afterwards....
+			saveTokenToLocalStorage(window.VTUBESTUDIO_AUTHTOKEN);
 			requestAuthentication();
 			break;
 		case "AuthenticationResponse":
@@ -210,6 +211,16 @@ function interpretResponse(responseData) {
 			break;
 		case 'APIError':
 			postLBMessage("Received an error from the API: " + responseData.data.errorID + ": " + responseData.data.message);
+			//Handle Known Errors
+			switch(responseData.data.errorID) {
+				case 8: 
+					//Start Auth loop
+					postConsoleMessage("There was a problem with the authenticated session; We'll try to re-authetincate.")
+					requestVtubeStudioAuthenticationToken();
+					break;
+				default:
+					break;
+			}
 			break;
 		default:
 			postLBMessage("Received an unknown message type: " + responseData.messageType + ". The handler for this event has not been implemented.");
@@ -240,10 +251,11 @@ function createVTSWebSocketClient() {
 
 		window.VTUBESTUDIO_WebSocket.onopen = function(event) {
 			//When the socket opens, send the auth request
-			if (!window.VTUBESTUDIO_AUTHTOKEN) {
+			if (!retrieveTokenFromLocalStorage()) {
 				requestVtubeStudioAuthenticationToken();
 			} else {
 				//Do we already have a token...? Use that then...
+				window.VTUBESTUDIO_AUTHTOKEN = retrieveTokenFromLocalStorage();
 				requestAuthentication();
 			}
 		}
@@ -346,6 +358,17 @@ function uuidv4() {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
+}
+
+const LOCALSTORAGE_AUTHTOKENKEY = "LB2_VTUBESTUDIO_AUTHTOKEN";
+
+//TODO CRITICAL: Must encrypt this token to keep safe.
+function saveTokenToLocalStorage(authToken) {
+	localStorage.setItem(LOCALSTORAGE_AUTHTOKENKEY, authToken);
+}
+
+function retrieveTokenFromLocalStorage() {
+	return localStorage.getItem(LOCALSTORAGE_AUTHTOKENKEY);
 }
 
 postLBMessage("Initializing...");
