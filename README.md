@@ -1,5 +1,5 @@
 # Lioranboard2VTubeStudioExtension
-  This is an extension/plugin for Lioranboard 2 that allows one to control Denchisoft's VTubeStudio using their API
+  This is an extension/plugin for Lioranboard 2 that allows one to control Denchisoft's VTubeStudio using their API.
   In short, this extension allows one to trigger hotkeys defined in VTubeStudio without the need to simulate key presses. Simulating key presses is a problem, primarily 
   due to possible key assignment conflicts. For instance, you may assign a hotkey to trigger with "Control + 1", but there may be an untold number of concurrently
   running programs that also utilize this assignment, leading to some unforeseen consequences. 
