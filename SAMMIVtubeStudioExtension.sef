@@ -21,7 +21,7 @@ Written by Hue, the Centipede Youkai
   <div class="column">
     <p>Created by Hue, the Centipede Youkai</p> 
     <a href="https://twitter.com/Hue_SwordDevil">Twitter</a>
-    <a href="https://github.com/HueVirtualCreature/Lioranboard2VTubeStudioExtension">GitHub</a>
+    <a href="https://github.com/HueVirtualCreature/SAMMIVtubeStudioExtension">GitHub</a>
     <p>You may access the commands under Extension Commands > SAMMI Bridge > VTubeStudio*</p>
     <p>Please keep in mind that the Bridge MUST BE OPEN in order for any of its commands to work.</p>
 	<button class="btn btn-primary btn-sm" onclick="requestVtubeStudioAuthenticationToken();">Authenticate with VTubeStudio</button>
@@ -30,23 +30,6 @@ Written by Hue, the Centipede Youkai
 </div>
 
 [insert_command]
-SAMMI.extCommand("VtubeStudio - Move Model",3355443, 52, {
-	//TODO My god, no numeric input type
-	//Need better default values
-	positionX: ["PositionX", 14, "0"],
-	positionY: ["PositionY", 14, "0"],
-	size: ["Size", 14, "1"],
-	rotation: ["Rotation", 14, "0"],
-	time: ["Time (0-2)", 14, "0.2"],
-	relative: ["Relative Values", 2, false],
-	dev_note: ["Dev Note", 0, "This one doesn't work super \nwell mainly because you have to \ndo a lot of trial and error to get \nthe numbers just right....\ngood luck! Changing the \ncontents of this textbox \ndoes nothing, by the way."]
- })
-
- SAMMI.extCommand("VtubeStudio - Pull Value",3355443, 52, {
-	Variable: ["Variable", 14, ""],
-	PullValue: ["Pull Value", 19, null, null, ["positionX", "positionY", "size", "rotation", "modelName", "modelID", "modelLoadTime", "timeSinceModelLoaded"]],
-	Global: ["Global", 2, false]
- })
 
 [insert_hook]
 case "VtubeStudio - Send Hotkey":{
@@ -75,10 +58,8 @@ case "VtubeStudio - Pull Value": {
 			modelData = { ...modelData, ...modelData.modelPosition };
 			if (!!modelData[LioranBoardJSON.PullValue]) {
 				if (LioranBoardJSON.Global === true) {
-					// SAMMIVTS_postSAMMIMessage("Setting " + LioranBoardJSON.Variable + " to " + modelData[LioranBoardJSON.PullValue]);
 					SAMMI.setVariable(LioranBoardJSON.Variable, modelData[LioranBoardJSON.PullValue]);
 				} else {
-					// SAMMIVTS_postSAMMIMessage("Setting " + LioranBoardJSON.FromButton + "." + LioranBoardJSON.Variable + " to " + modelData[LioranBoardJSON.PullValue]);
 					SAMMI.setVariable(LioranBoardJSON.Variable, modelData[LioranBoardJSON.PullValue], LioranBoardJSON.FromButton);
 				}
 			} else {
@@ -91,8 +72,8 @@ case "VtubeStudio - Pull Value": {
 
 [insert_script]
 const VTUBESTUDIO_SERVER = 'ws://localhost:8001';
-const VTUBESTUDIO_PLUGINNAME = "LioranBoard2VtubeStudioIntegration";
-const VTUBESTUDIO_AUTHORNAME = "Hue, the Centipede Youkai";
+const VTUBESTUDIO_PLUGINNAME = "SAMMIVtubeStudioExtension";
+const VTUBESTUDIO_AUTHORNAME = "Hue_vCreature";
 const VTUBESTUDIO_PLUGIN_ICON64 = null;
 
 window[`${VTUBESTUDIO_PLUGINNAME}_Space`] = {};
@@ -102,7 +83,7 @@ window[`${VTUBESTUDIO_PLUGINNAME}_Space`][`${VTUBESTUDIO_PLUGINNAME}_IsAuthentic
 window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`] = {};
 window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Pull Value"] = [];
 
-const generateBaseRequest = (messageType) => {
+const SAMMIVTS_generateBaseRequest = (messageType) => {
 	return {
 		"apiName": "VTubeStudioPublicAPI",
 		"apiVersion": "1.0",
@@ -122,6 +103,27 @@ VTUBESTUDIO_WebSocket_ReadyStates = {
 	CLOSING: 2,
 	CLOSED: 3
 };
+
+function SAMMIVTS_insertBaseCommands() {
+	SAMMI.extCommand("VtubeStudio - Move Model",3355443, 52, {
+		//TODO My god, no numeric input type
+		//Need better default values
+		positionX: ["PositionX", 14, "0"],
+		positionY: ["PositionY", 14, "0"],
+		size: ["Size", 14, "1"],
+		rotation: ["Rotation", 14, "0"],
+		time: ["Time (0-2)", 14, "0.2"],
+		relative: ["Relative Values", 2, false],
+		dev_note: ["Dev Note", 0, "This one doesn't work super \nwell mainly because you have to \ndo a lot of trial and error to get \nthe numbers just right....\ngood luck! Changing the \ncontents of this textbox \ndoes nothing, by the way."]
+	 })
+	
+	 SAMMI.extCommand("VtubeStudio - Pull Value",3355443, 52, {
+		Variable: ["Variable", 14, ""],
+		PullValue: ["Pull Value", 19, null, null, ["positionX", "positionY", "size", "rotation", "modelName", "modelID", "modelLoadTime", "timeSinceModelLoaded"]],
+		Global: ["Global", 2, false]
+	 })
+	
+}
 
 function SAMMIVTS_postSAMMIMessage(message, level = 1) {
 	switch(level) {
@@ -285,34 +287,34 @@ function createVTSWebSocketClient() {
 
 function requestVtubeStudioAuthenticationToken() {
 	SAMMIVTS_postSAMMIMessage('Plugin is asking for authentication in VTube Studio', 0);
-	const request = generateBaseRequest("AuthenticationTokenRequest");
+	const request = SAMMIVTS_generateBaseRequest("AuthenticationTokenRequest");
 	request.data.pluginIcon = VTUBESTUDIO_PLUGIN_ICON64;
 	sendMessageToVtubeStudio(request);
 }
 
 function requestAuthentication() {
-	sendMessageToVtubeStudio(generateBaseRequest("AuthenticationRequest"));
+	sendMessageToVtubeStudio(SAMMIVTS_generateBaseRequest("AuthenticationRequest"));
 }
 
 function requestListOfModels() {
-	sendMessageToVtubeStudio(generateBaseRequest("AvailableModelsRequest"));
+	sendMessageToVtubeStudio(SAMMIVTS_generateBaseRequest("AvailableModelsRequest"));
 }
 
 function requestModelHotKeys(modelID = null) {
-	let request = generateBaseRequest("HotkeysInCurrentModelRequest");
+	let request = SAMMIVTS_generateBaseRequest("HotkeysInCurrentModelRequest");
 	request.data.modelID = modelID;
 	sendMessageToVtubeStudio(request);
 }
 
 function requestHotkeyTrigger(hotkeyID) {
-	let request = generateBaseRequest("HotkeyTriggerRequest");
+	let request = SAMMIVTS_generateBaseRequest("HotkeyTriggerRequest");
 	request.data.hotkeyID = hotkeyID;
   	sendMessageToVtubeStudio(request);
 }
 
 //TODO Implement this
 function requestItemList(hotkeyID) {
-	let request = generateBaseRequest("ItemListRequest");
+	let request = SAMMIVTS_generateBaseRequest("ItemListRequest");
 	request.data = {
 		...request.data,
 		"includeAvailableSpots": true,
@@ -326,7 +328,7 @@ function requestItemList(hotkeyID) {
 
 //TODO Implement this
 function requestLoadItem(hotkeyID) {
-	let request = generateBaseRequest("ItemLoadRequest");
+	let request = SAMMIVTS_generateBaseRequest("ItemLoadRequest");
 	request.data = {
 		...request.data,
 		"fileName": "some_item_name.jpg",
@@ -348,7 +350,7 @@ function requestLoadItem(hotkeyID) {
 
 //TODO Implement this
 function requestRemoveItem(hotkeyID) {
-	let request = generateBaseRequest("ItemUnloadRequest");
+	let request = SAMMIVTS_generateBaseRequest("ItemUnloadRequest");
 	request.data = {
 		...request.data,
 		"unloadAllInScene": false,
@@ -368,7 +370,7 @@ function requestRemoveItem(hotkeyID) {
 
 //TODO Implement this
 function requestItemAnimationControl(hotkeyID) {
-	let request = generateBaseRequest("ItemAnimationControlRequest");
+	let request = SAMMIVTS_generateBaseRequest("ItemAnimationControlRequest");
 	request.data = {
 		...request.data,
 		"itemInstanceID": "ItemInstanceId",
@@ -386,7 +388,7 @@ function requestItemAnimationControl(hotkeyID) {
 
 //TODO Implement this
 function requestItemMove(hotkeyID) {
-	let request = generateBaseRequest("ItemMoveRequest");
+	let request = SAMMIVTS_generateBaseRequest("ItemMoveRequest");
 	request.data = {
 		...request.data,
 		"itemInstanceID": "ItemInstanceId",
@@ -405,14 +407,14 @@ function requestItemMove(hotkeyID) {
 
 function requestLoadModel(modelID) {
 	if (!modelID) { throw "modelID cannot be null or undefined" }
-	let request = generateBaseRequest("ModelLoadRequest");
+	let request = SAMMIVTS_generateBaseRequest("ModelLoadRequest");
 	request.data.modelID = modelID;
 	sendMessageToVtubeStudio(request);
 }
 
 function requestMoveModel(posX = null, posY = null, rotation = null, size = null, time = 0.2, relativeValues = false) {
 	SAMMIVTS_postConsoleMessage(`Moving model: ${posX}/${posY}/${rotation}/${size}/${time}/${relativeValues}`);
-	let request = generateBaseRequest("MoveModelRequest");
+	let request = SAMMIVTS_generateBaseRequest("MoveModelRequest");
 	request.data = {
 		timeInSeconds: time,
 		valuesAreRelativeToModel: relativeValues,
@@ -458,7 +460,7 @@ function requestRefresh() {
 }
 
 function requestCurrentModelData(obj) {
-	let request = generateBaseRequest("CurrentModelRequest");
+	let request = SAMMIVTS_generateBaseRequest("CurrentModelRequest");
 	request = {...request, ...obj};
 	sendMessageToVtubeStudio(request);
 }
@@ -481,6 +483,19 @@ function retrieveTokenFromLocalStorage() {
 	return localStorage.getItem(LOCALSTORAGE_AUTHTOKENKEY);
 }
 
-SAMMIVTS_postSAMMIMessage("Initializing...");
-createVTSWebSocketClient();
+function SAMMIVTS_initialize() {
+	if (sammiclient) {
+		SAMMIVTS_postSAMMIMessage("Initializing...");
+		SAMMIVTS_insertBaseCommands();
+		createVTSWebSocketClient();
+		return;
+	}
+
+	if (!sammiclient) {
+		setTimeout(SAMMIVTS_initialize, 1000);
+		return;
+	}
+}
+
+SAMMIVTS_initialize();
 [insert_over]
