@@ -1,5 +1,5 @@
 [extension_name]
-VTubeStudio Integration
+SAMMIVTubeStudioExtension
 
 [extension_info]
 Written by Hue, the Centipede Youkai
@@ -12,7 +12,7 @@ Written by Hue, the Centipede Youkai
 </style>
 
 <div class="row">
-  <p>LioranBoard2 VtubeStudio Integration: Interfaces Lioranboard with Denchisoft's VTubeStudio by invoking endpoints on the VTubeStudio API via Commands</p>
+  <p>SAMMIVtubeStudioExtension: Interfaces SAMMI with Denchisoft's VTubeStudio by invoking endpoints on the VTubeStudio API via Commands</p>
 </div>
 <div class="row">
   <div class="column">
@@ -22,16 +22,15 @@ Written by Hue, the Centipede Youkai
     <p>Created by Hue, the Centipede Youkai</p> 
     <a href="https://twitter.com/Hue_SwordDevil">Twitter</a>
     <a href="https://github.com/HueVirtualCreature/Lioranboard2VTubeStudioExtension">GitHub</a>
-    <p>You may access the commands under Extension Commands > Transmitter > VTubeStudio*</p>
-    <p>Please keep in mind that the Transmitter MUST BE OPEN in order for any of its commands to work.</p>
-	<p>Status: Connected!</p>
+    <p>You may access the commands under Extension Commands > SAMMI Bridge > VTubeStudio*</p>
+    <p>Please keep in mind that the Bridge MUST BE OPEN in order for any of its commands to work.</p>
 	<button class="btn btn-primary btn-sm" onclick="requestVtubeStudioAuthenticationToken();">Authenticate with VTubeStudio</button>
 	<button class="btn btn-primary btn-sm" onclick="requestRefresh();">Refresh Model and Hotkey Lists</button>
   </div>
 </div>
 
 [insert_command]
-LB.extCommand("VtubeStudio - Move Model",3355443, 52, {
+SAMMI.extCommand("VtubeStudio - Move Model",3355443, 52, {
 	//TODO My god, no numeric input type
 	//Need better default values
 	positionX: ["PositionX", 14, "0"],
@@ -43,7 +42,7 @@ LB.extCommand("VtubeStudio - Move Model",3355443, 52, {
 	dev_note: ["Dev Note", 0, "This one doesn't work super \nwell mainly because you have to \ndo a lot of trial and error to get \nthe numbers just right....\ngood luck! Changing the \ncontents of this textbox \ndoes nothing, by the way."]
  })
 
- LB.extCommand("VtubeStudio - Pull Value",3355443, 52, {
+ SAMMI.extCommand("VtubeStudio - Pull Value",3355443, 52, {
 	Variable: ["Variable", 14, ""],
 	PullValue: ["Pull Value", 19, null, null, ["positionX", "positionY", "size", "rotation", "modelName", "modelID", "modelLoadTime", "timeSinceModelLoaded"]],
 	Global: ["Global", 2, false]
@@ -76,14 +75,14 @@ case "VtubeStudio - Pull Value": {
 			modelData = { ...modelData, ...modelData.modelPosition };
 			if (!!modelData[LioranBoardJSON.PullValue]) {
 				if (LioranBoardJSON.Global === true) {
-					postLBMessage("Setting " + LioranBoardJSON.Variable + " to " + modelData[LioranBoardJSON.PullValue]);
-					LB.setVariable(LioranBoardJSON.Variable, modelData[LioranBoardJSON.PullValue]);
+					// SAMMIVTS_postSAMMIMessage("Setting " + LioranBoardJSON.Variable + " to " + modelData[LioranBoardJSON.PullValue]);
+					SAMMI.setVariable(LioranBoardJSON.Variable, modelData[LioranBoardJSON.PullValue]);
 				} else {
-					postLBMessage("Setting " + LioranBoardJSON.FromButton + "." + LioranBoardJSON.Variable + " to " + modelData[LioranBoardJSON.PullValue]);
-					LB.setVariable(LioranBoardJSON.Variable, modelData[LioranBoardJSON.PullValue], LioranBoardJSON.FromButton);
+					// SAMMIVTS_postSAMMIMessage("Setting " + LioranBoardJSON.FromButton + "." + LioranBoardJSON.Variable + " to " + modelData[LioranBoardJSON.PullValue]);
+					SAMMI.setVariable(LioranBoardJSON.Variable, modelData[LioranBoardJSON.PullValue], LioranBoardJSON.FromButton);
 				}
 			} else {
-				postLBMessage("ERROR: Could not find " + LioranBoardJSON.PullValue + " in the received data");
+				SAMMIVTS_postSAMMIMessage("ERROR: Could not find " + LioranBoardJSON.PullValue + " in the received data");
 			}
 		}
 	};
@@ -124,18 +123,18 @@ VTUBESTUDIO_WebSocket_ReadyStates = {
 	CLOSED: 3
 };
 
-function postLBMessage(message, level = 1) {
+function SAMMIVTS_postSAMMIMessage(message, level = 1) {
 	switch(level) {
 		case 0:
-			LB.notification("VTUBESTUDIO: " + message);
+			SAMMI.notification("VTUBESTUDIO: " + message);
 			break;
 		case 1:
-			LB.alert("VTUBESTUDIO: " + message);
+			SAMMI.alert("VTUBESTUDIO: " + message);
 			break;
 	}
 }
 
-function postConsoleMessage(message) {
+function SAMMIVTS_postConsoleMessage(message) {
 	console.debug(`${VTUBESTUDIO_PLUGINNAME}: ${message}`);
 }
 
@@ -145,7 +144,7 @@ function getVTSHotKeyIdentifier(hotkeyName, modelName) {
 
 function interpretResponse(responseData) {
 	if (!responseData) { throw 'interpretResponse: responseData cannot be null!'; }
-	postConsoleMessage("Received message " + responseData.messageType);
+	SAMMIVTS_postConsoleMessage("Received message " + responseData.messageType);
 	switch(responseData.messageType) {
 		case "AuthenticationTokenResponse":
 			window.VTUBESTUDIO_AUTHTOKEN = responseData.data.authenticationToken;
@@ -154,21 +153,23 @@ function interpretResponse(responseData) {
 			requestAuthentication();
 			break;
 		case "AuthenticationResponse":
-			postLBMessage(`Response from server: ${responseData.data.reason}`);
+			SAMMIVTS_postSAMMIMessage(`Response from server: ${responseData.data.reason}`);
 			if (responseData.data.authenticated === false) { //Auth Token failed??? Request a new one
 				window[`${VTUBESTUDIO_PLUGINNAME}_Space`][`${VTUBESTUDIO_PLUGINNAME}_IsAuthenticated`] = responseData.data.authenticated;
 				requestVtubeStudioAuthenticationToken();
 			} else if (responseData.data.authenticated === true) {
 				window[`${VTUBESTUDIO_PLUGINNAME}_Space`][`${VTUBESTUDIO_PLUGINNAME}_IsAuthenticated`] = responseData.data.authenticated;
 				requestListOfModels();
+				//TODO Reactivate when the API is updated
+				//requestItemList();
 			}
 			break;
 		case "AvailableModelsResponse":
-			postConsoleMessage(`Found ${responseData.data.numberOfModels} models.`);
+			SAMMIVTS_postConsoleMessage(`Found ${responseData.data.numberOfModels} models.`);
 			window[`${VTUBESTUDIO_PLUGINNAME}_Models`] = responseData.data.availableModels;
 			window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = [];
 
-			LB.extCommand("VtubeStudio - Load Model",3355443, 52, { 
+			SAMMI.extCommand("VtubeStudio - Load Model",3355443, 52, { 
 				Model: ['Model to Load', 19, null, null, window[`${VTUBESTUDIO_PLUGINNAME}_Models`].map(m => `${m.modelName}`)]
 			})
 			
@@ -178,7 +179,7 @@ function interpretResponse(responseData) {
 			}
 			break;
 		case "HotkeysInCurrentModelResponse":
-			postConsoleMessage(`Found ${responseData.data.availableHotkeys.length} hotkeys for ${responseData.data.modelName}`);
+			SAMMIVTS_postConsoleMessage(`Found ${responseData.data.availableHotkeys.length} hotkeys for ${responseData.data.modelName}`);
 			
 			window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].concat(responseData.data.availableHotkeys.filter(hotkey => !!hotkey.name && hotkey.name !== "").map(hotkey => { 
 				return {
@@ -188,18 +189,34 @@ function interpretResponse(responseData) {
 				}; 
 			}));
 
-			LB.extCommand("VtubeStudio - Send Hotkey",3355443, 52, {
+			SAMMI.extCommand("VtubeStudio - Send Hotkey",3355443, 52, {
 				Hotkey: ['Hotkey', 19, null, null, window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].map(hotkey => getVTSHotKeyIdentifier(hotkey.hotkeyName, hotkey.modelName))]
 			  });
 			break;
 		case "HotkeyTriggerResponse":
-			postLBMessage(`Triggered hotkey`);
+			SAMMIVTS_postSAMMIMessage(`Triggered hotkey`);
 			break;
 		case "ModelLoadResponse":
-			postLBMessage(`Model loaded`);
+			SAMMIVTS_postSAMMIMessage(`Model loaded`);
 			break;
 		case "MoveModelResponse":
-			postLBMessage("Model moved");
+			SAMMIVTS_postSAMMIMessage("Model moved");
+			break;
+		case "ItemListResponse":
+			SAMMIVTS_postSAMMIMessage("ItemListResponse");
+			break;
+		case "ItemLoadResponse":
+			SAMMIVTS_postSAMMIMessage("ItemLoadResponse");
+			break;
+		case "ItemUnloadResponse":
+			SAMMIVTS_postSAMMIMessage("ItemUnloadResponse");
+			break;
+		case "ItemAnimationControlResponse":
+			SAMMIVTS_postSAMMIMessage("ItemAnimationControlResponse");
+			break;
+		case "ItemMoveResponse":
+			//If the request was successful, you will just receive an empty response.
+			SAMMIVTS_postSAMMIMessage("Item Moved");
 			break;
 		case "CurrentModelResponse":
 			if (!!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Pull Value"] 
@@ -210,12 +227,12 @@ function interpretResponse(responseData) {
 			window[`${VTUBESTUDIO_PLUGINNAME}_CurrentModelData`] = responseData.data; //TODO Need this?
 			break;
 		case 'APIError':
-			postLBMessage("Received an error from the API: " + responseData.data.errorID + ": " + responseData.data.message);
+			SAMMIVTS_postSAMMIMessage("Received an error from the API: " + responseData.data.errorID + ": " + responseData.data.message);
 			//Handle Known Errors
 			switch(responseData.data.errorID) {
 				case 8: 
 					//Start Auth loop
-					postConsoleMessage("There was a problem with the authenticated session; We'll try to re-authetincate.")
+					SAMMIVTS_postConsoleMessage("There was a problem with the authenticated session; We'll try to re-authetincate.")
 					requestVtubeStudioAuthenticationToken();
 					break;
 				default:
@@ -223,13 +240,13 @@ function interpretResponse(responseData) {
 			}
 			break;
 		default:
-			postLBMessage("Received an unknown message type: " + responseData.messageType + ". The handler for this event has not been implemented.");
+			SAMMIVTS_postSAMMIMessage("Received an unknown message type: " + responseData.messageType + ". The handler for this event has not been implemented.");
 			break;
 	}
 }
 
 function createVTSWebSocketClient() {
-	postLBMessage('Checking client');
+	SAMMIVTS_postSAMMIMessage('Checking client');
 	if (!window.VTUBESTUDIO_WebSocket || window.VTUBESTUDIO_WebSocket.readyState === VTUBESTUDIO_WebSocket_ReadyStates.CLOSED) {
 		window.VTUBESTUDIO_WebSocket = new WebSocket(VTUBESTUDIO_SERVER);
 
@@ -239,13 +256,13 @@ function createVTSWebSocketClient() {
 				const responseData = JSON.parse(event.data);
 				interpretResponse(responseData);
 			} else {
-				postLBMessage("Response data was empty", 1);
+				SAMMIVTS_postSAMMIMessage("Response data was empty", 1);
 			}
 		}
 		
 		window.VTUBESTUDIO_WebSocket.onclose = function(event) {
-			postConsoleMessage(`Disconnected(${event.code || "No code provided"}, ${event.reason || "No reason provided"}), reconnecting in 5 seconds`);
-			postLBMessage('Socket disconnected, reconnecting in 5 seconds');
+			SAMMIVTS_postConsoleMessage(`Disconnected(${event.code || "No code provided"}, ${event.reason || "No reason provided"}), reconnecting in 5 seconds`);
+			SAMMIVTS_postSAMMIMessage('Socket disconnected, reconnecting in 5 seconds');
 			setTimeout(createVTSWebSocketClient, 5000);
 		}
 
@@ -261,13 +278,13 @@ function createVTSWebSocketClient() {
 		}
 	}
 	else if (window.VTUBESTUDIO_WebSocket.readyState === VTUBESTUDIO_WebSocket_ReadyStates.CLOSING) {
-		postConsoleMessage(`Closure pending, waiting 5 seconds to reopen`);
+		SAMMIVTS_postConsoleMessage(`Closure pending, waiting 5 seconds to reopen`);
 		setTimeout(createVTSWebSocketClient, 5000);
 	}
 }
 
 function requestVtubeStudioAuthenticationToken() {
-	postLBMessage('Plugin is asking for authentication in VTube Studio', 0);
+	SAMMIVTS_postSAMMIMessage('Plugin is asking for authentication in VTube Studio', 0);
 	const request = generateBaseRequest("AuthenticationTokenRequest");
 	request.data.pluginIcon = VTUBESTUDIO_PLUGIN_ICON64;
 	sendMessageToVtubeStudio(request);
@@ -293,6 +310,99 @@ function requestHotkeyTrigger(hotkeyID) {
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Implement this
+function requestItemList(hotkeyID) {
+	let request = generateBaseRequest("ItemListRequest");
+	request.data = {
+		...request.data,
+		"includeAvailableSpots": true,
+		"includeItemInstancesInScene": true,
+		"includeAvailableItemFiles": true,
+		// "onlyItemsWithFileName": "OPTIONAL_my_item_filename.png",
+		// "onlyItemsWithInstanceID": "OPTIONAL_InstanceIdOfItemInScene"
+	};
+  	sendMessageToVtubeStudio(request);
+}
+
+//TODO Implement this
+function requestLoadItem(hotkeyID) {
+	let request = generateBaseRequest("ItemLoadRequest");
+	request.data = {
+		...request.data,
+		"fileName": "some_item_name.jpg",
+		"positionX": 0,
+		"positionY": 0.5,
+		"size": 0.33,
+		"rotation": 90,
+		"fadeTime": 0.5,
+		"order": 4,
+		"failIfOrderTaken": false,
+		"smoothing": 0,
+		"censored": false,
+		"flipped": false,
+		"locked": false,
+		"unloadWhenPluginDisconnects": true
+	};
+  	sendMessageToVtubeStudio(request);
+}
+
+//TODO Implement this
+function requestRemoveItem(hotkeyID) {
+	let request = generateBaseRequest("ItemUnloadRequest");
+	request.data = {
+		...request.data,
+		"unloadAllInScene": false,
+		"unloadAllLoadedByThisPlugin": false,
+		"allowUnloadingItemsLoadedByUserOrOtherPlugins": true,
+		"instanceIDs":
+		[
+			"SomeInstanceIdOfItemToUnload", "SomeOtherInstanceIdOfItemToUnload"
+		],
+		"fileNames":
+		[
+			"UnloadAllItemInstancesWithThisFileName", "SomeOtherFileName"
+		]
+	};
+  	sendMessageToVtubeStudio(request);
+}
+
+//TODO Implement this
+function requestItemAnimationControl(hotkeyID) {
+	let request = generateBaseRequest("ItemAnimationControlRequest");
+	request.data = {
+		...request.data,
+		"itemInstanceID": "ItemInstanceId",
+		"framerate": 12,
+		"frame": 3,
+		"brightness": 1,
+		"opacity": 1,
+		"setAutoStopFrames": true,
+		"autoStopFrames": [0, 7, 26],
+		"setAnimationPlayState": true,
+		"animationPlayState": true
+	};
+  	sendMessageToVtubeStudio(request);
+}
+
+//TODO Implement this
+function requestItemMove(hotkeyID) {
+	let request = generateBaseRequest("ItemMoveRequest");
+	request.data = {
+		...request.data,
+		"itemInstanceID": "ItemInstanceId",
+		"timeInSeconds": 1,	
+		"fadeMode": "easeOut",
+		"positionX": 0.2,
+		"positionY": -0.8,
+		"size": 0.6,
+		"rotation": 180,
+		"setFlip": true,
+		"flip": false,
+		"userCanStop": true	
+	}
+  	sendMessageToVtubeStudio(request);
+}
+
 function requestLoadModel(modelID) {
 	if (!modelID) { throw "modelID cannot be null or undefined" }
 	let request = generateBaseRequest("ModelLoadRequest");
@@ -301,7 +411,7 @@ function requestLoadModel(modelID) {
 }
 
 function requestMoveModel(posX = null, posY = null, rotation = null, size = null, time = 0.2, relativeValues = false) {
-	postConsoleMessage(`Moving model: ${posX}/${posY}/${rotation}/${size}/${time}/${relativeValues}`);
+	SAMMIVTS_postConsoleMessage(`Moving model: ${posX}/${posY}/${rotation}/${size}/${time}/${relativeValues}`);
 	let request = generateBaseRequest("MoveModelRequest");
 	request.data = {
 		timeInSeconds: time,
@@ -327,7 +437,7 @@ function sendMessageToVtubeStudio(request) {
 			});
 			window.VTUBESTUDIO_WebSocket.send(blob);
 		} else { //Socket was not open???!!!?!?! Uh......;;;;
-			postLBMessage('Connection pending(' + window.VTUBESTUDIO_WebSocket.readyState + ')');
+			SAMMIVTS_postSAMMIMessage('Connection pending(' + window.VTUBESTUDIO_WebSocket.readyState + ')');
 			if (window.VTUBESTUDIO_WebSocket.readyState == VTUBESTUDIO_WebSocket_ReadyStates.CLOSING) {
 				setTimeout(createVTSWebSocketClient, 5000);
 			} else if (window.VTUBESTUDIO_WebSocket.readyState == VTUBESTUDIO_WebSocket_ReadyStates.CLOSED) {
@@ -337,13 +447,13 @@ function sendMessageToVtubeStudio(request) {
 			}
 		}
 	} else {
-		postLBMessage(`Websocket not instantiated`);
+		SAMMIVTS_postSAMMIMessage(`Websocket not instantiated`);
 		createVTSWebSocketClient();
 	}
 };
 
 function requestRefresh() {
-	postLBMessage("Refreshing model and hotkey list");
+	SAMMIVTS_postSAMMIMessage("Refreshing model and hotkey list");
 	requestListOfModels();
 }
 
@@ -362,7 +472,7 @@ function uuidv4() {
 
 const LOCALSTORAGE_AUTHTOKENKEY = "LB2_VTUBESTUDIO_AUTHTOKEN";
 
-//TODO CRITICAL: Must encrypt this token to keep safe.
+//FIXME Must encrypt this token to keep safe.
 function saveTokenToLocalStorage(authToken) {
 	localStorage.setItem(LOCALSTORAGE_AUTHTOKENKEY, authToken);
 }
@@ -371,6 +481,6 @@ function retrieveTokenFromLocalStorage() {
 	return localStorage.getItem(LOCALSTORAGE_AUTHTOKENKEY);
 }
 
-postLBMessage("Initializing...");
+SAMMIVTS_postSAMMIMessage("Initializing...");
 createVTSWebSocketClient();
 [insert_over]
