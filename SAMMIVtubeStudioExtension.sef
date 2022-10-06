@@ -56,15 +56,10 @@ case "VtubeStudio - Pull Value": {
 		if (!!LioranBoardJSON.Variable) {
 			//I think the model position data is inside "modelPosition" proptery, so let's extract it....
 			modelData = { ...modelData, ...modelData.modelPosition };
-			if (!!modelData[LioranBoardJSON.PullValue]) {
-				if (LioranBoardJSON.Global === true) {
-					SAMMI.setVariable(LioranBoardJSON.Variable, modelData[LioranBoardJSON.PullValue]);
-				} else {
-					SAMMI.setVariable(LioranBoardJSON.Variable, modelData[LioranBoardJSON.PullValue], LioranBoardJSON.FromButton);
-				}
-			} else {
-				SAMMIVTS_postSAMMIMessage("ERROR: Could not find " + LioranBoardJSON.PullValue + " in the received data");
-			}
+			let buttonID = 'global';
+			if (LioranBoardJSON.Global !== true) {buttonID = LioranBoardJSON.FromButton;}
+			if (!LioranBoardJSON.PullValue || LioranBoardJSON.PullValue == "") {SAMMI.setVariable(LioranBoardJSON.Variable, modelData, buttonID); return;}
+			SAMMI.setVariable(LioranBoardJSON.Variable, modelData[LioranBoardJSON.PullValue] || undefined, buttonID);
 		}
 	};
 	requestCurrentModelData({requestID: requestID});
@@ -105,21 +100,35 @@ VTUBESTUDIO_WebSocket_ReadyStates = {
 };
 
 function SAMMIVTS_insertBaseCommands() {
+	const commonModelDataProps = [
+		"*leave blank to save entire response*",
+		"modelID", 
+		"modelName", 
+		"modelPosition", 
+		"positionX", 
+		"positionY", 
+		"size", 
+		"rotation", 
+		"modelLoaded", 
+		"modelLoadTime", 
+		"hasPhysicsFile", 
+		"timeSinceModelLoaded"
+	];
+
 	SAMMI.extCommand("VtubeStudio - Move Model",3355443, 52, {
-		//TODO My god, no numeric input type
 		//Need better default values
 		positionX: ["PositionX", 14, "0"],
 		positionY: ["PositionY", 14, "0"],
-		size: ["Size", 14, "1"],
-		rotation: ["Rotation", 14, "0"],
-		time: ["Time (0-2)", 14, "0.2"],
+		size: ["Size", 14, "-50.0"],
+		rotation: ["Rotation", 14, "360"],
+		time: ["Time (0-2)", 14, "0.5"],
 		relative: ["Relative Values", 2, false],
 		dev_note: ["Dev Note", 0, "This one doesn't work super \nwell mainly because you have to \ndo a lot of trial and error to get \nthe numbers just right....\ngood luck! Changing the \ncontents of this textbox \ndoes nothing, by the way."]
 	 })
 	
 	 SAMMI.extCommand("VtubeStudio - Pull Value",3355443, 52, {
 		Variable: ["Variable", 14, ""],
-		PullValue: ["Pull Value", 19, null, null, ["positionX", "positionY", "size", "rotation", "modelName", "modelID", "modelLoadTime", "timeSinceModelLoaded"]],
+		PullValue: ["Pull Value", 20, null, null, commonModelDataProps],
 		Global: ["Global", 2, false]
 	 })
 	
