@@ -65,6 +65,141 @@ case "VtubeStudio - Pull Value": {
 	requestCurrentModelData({requestID: requestID});
 } break
 
+case "VtubeStudio - Get Items List": {
+	const requestID = uuidv4();
+	window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get Items List"][requestID] = (data) => {
+		if (!!LioranBoardJSON.Variable) {
+			let buttonID = LioranBoardJSON.FromButton;
+			SAMMI.setVariable(LioranBoardJSON.Variable, data, buttonID);
+			return;
+		}
+	};
+	requestItemList({requestID: requestID}, LioranBoardJSON.includeAvailableSpots, 
+		LioranBoardJSON.includeItemInstancesInScene, LioranBoardJSON.includeAvailableItemFiles, 
+		LioranBoardJSON.onlyItemsWithFileName, LioranBoardJSON.onlyItemsWithInstanceID);
+} break
+
+case "VtubeStudio - Load Item": {
+	const requestID = uuidv4();
+	window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"][requestID] = (data) => {
+		if (!!LioranBoardJSON.variable) {
+			let buttonID = LioranBoardJSON.FromButton;
+			SAMMI.setVariable(LioranBoardJSON.variable, data, buttonID);
+			return;
+		}
+	};
+
+	const {
+		fileName,
+		positionX,
+		positionY,
+		size,
+		rotation,
+		fadeTime,
+		order,
+		failIfOrderTaken,
+		smoothing,
+		censored,
+		flipped,
+		locked,
+		unloadWhenPluginDisconnects
+	} = LioranBoardJSON;
+	requestLoadItem({
+		requestID,
+		fileName,
+		positionX,
+		positionY,
+		size,
+		rotation,
+		fadeTime,
+		order,
+		failIfOrderTaken,
+		smoothing,
+		censored,
+		flipped,
+		locked,
+		unloadWhenPluginDisconnects
+	});
+
+} break
+
+case "VtubeStudio - Load Item": {
+	const requestID = uuidv4();
+	window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"][requestID] = (data) => {
+		if (!!LioranBoardJSON.variable) {
+			let buttonID = LioranBoardJSON.FromButton;
+			SAMMI.setVariable(LioranBoardJSON.variable, data, buttonID);
+			return;
+		}
+	};
+
+	const {
+		fileName,
+		positionX,
+		positionY,
+		size,
+		rotation,
+		fadeTime,
+		order,
+		failIfOrderTaken,
+		smoothing,
+		censored,
+		flipped,
+		locked,
+		unloadWhenPluginDisconnects
+	} = LioranBoardJSON;
+	requestLoadItem({
+		requestID,
+		fileName,
+		positionX,
+		positionY,
+		size,
+		rotation,
+		fadeTime,
+		order,
+		failIfOrderTaken,
+		smoothing,
+		censored,
+		flipped,
+		locked,
+		unloadWhenPluginDisconnects
+	});
+
+} break
+
+case "VtubeStudio - Remove Item": {
+	const requestID = uuidv4();
+	// window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"][requestID] = (data) => {
+	// 	if (!!LioranBoardJSON.variable) {
+	// 		let buttonID = LioranBoardJSON.FromButton;
+	// 		SAMMI.setVariable(LioranBoardJSON.variable, data, buttonID);
+	// 		return;
+	// 	}
+	// };
+	const {
+		unloadAllInScene,
+		unloadAllLoadedByThisPlugin,
+		allowUnloadingItemsLoadedByUserOrOtherPlugins,
+		instanceIDs: instanceIDsArrayName,
+		fileNames: fileNamesArrayName
+	} = LioranBoardJSON;
+
+	SAMMI.getVariable(instanceIDsArrayName, LioranBoardJSON.FromButton).then(instanceIDs => {
+		SAMMI.getVariable(fileNamesArrayName, LioranBoardJSON.FromButton).then(fileNames => {
+			requestRemoveItem({
+				unloadAllInScene,
+				unloadAllLoadedByThisPlugin,
+				allowUnloadingItemsLoadedByUserOrOtherPlugins,
+				instanceIDs: instanceIDs.value,
+				fileNames: fileNames.value
+			});
+		});
+	});
+
+	
+
+} break
+
 [insert_script]
 const VTUBESTUDIO_SERVER = 'ws://localhost:8001';
 const VTUBESTUDIO_PLUGINNAME = "SAMMIVtubeStudioExtension";
@@ -77,6 +212,8 @@ window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = [];
 window[`${VTUBESTUDIO_PLUGINNAME}_Space`][`${VTUBESTUDIO_PLUGINNAME}_IsAuthenticated`] = false;
 window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`] = {};
 window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Pull Value"] = [];
+window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get Items List"] = [];
+window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"] = [];
 
 const SAMMIVTS_generateBaseRequest = (messageType) => {
 	return {
@@ -124,14 +261,48 @@ function SAMMIVTS_insertBaseCommands() {
 		time: ["Time (0-2)", 14, "0.5"],
 		relative: ["Relative Values", 2, false],
 		dev_note: ["Dev Note", 0, "This one doesn't work super \nwell mainly because you have to \ndo a lot of trial and error to get \nthe numbers just right....\ngood luck! Changing the \ncontents of this textbox \ndoes nothing, by the way."]
-	 })
+	 });
 	
-	 SAMMI.extCommand("VtubeStudio - Pull Value",3355443, 52, {
+	SAMMI.extCommand("VtubeStudio - Pull Value",3355443, 52, {
+	Variable: ["Variable", 14, ""],
+	PullValue: ["Pull Value", 20, "", null, commonModelDataProps],
+	Global: ["Global", 2, false]
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get Items List",3355443, 80, {
 		Variable: ["Variable", 14, ""],
-		PullValue: ["Pull Value", 20, null, null, commonModelDataProps],
-		Global: ["Global", 2, false]
-	 })
-	
+		includeAvailableSpots: ["includeAvailableSpots", 2, false],
+		includeItemInstancesInScene: ["includeItemInstancesInScene", 2, false],
+		includeAvailableItemFiles: ["includeAvailableItemFiles", 2, false],
+		onlyItemsWithFileName: ["onlyItemsWithFileName", 14, ""],
+		onlyItemsWithInstanceID: ["onlyItemsWithInstanceID", 14, ""]
+	});
+
+	SAMMI.extCommand("VtubeStudio - Load Item",3355443, 80, {
+		variable: ["variable", 14, ""],
+		fileName: ["fileName", 14, ""],
+		positionX: ["positionX", 14, "0"],
+		positionY: ["positionY", 14, "0.5"],
+		size: ["size", 14, "0.33"],
+		rotation: ["rotation", 14, "90"],
+		fadeTime: ["fadeTime", 14, "0.5"],
+		order: ["order", 14, "4"],
+		failIfOrderTaken: ["failIfOrderTaken", 2, false],
+		smoothing: ["smoothing", 14, "0.5"],
+		censored: ["censored", 2, false],
+		flipped: ["flipped", 2, false],
+		locked: ["locked", 2, false],
+		unloadWhenPluginDisconnects: ["unloadWhenPluginDisconnects", 2, true]
+	});
+
+	SAMMI.extCommand("VtubeStudio - Remove Item",3355443, 80, {
+		variable: ["Variable", 14, ""],
+		unloadAllInScene: ["unloadAll", 2, false],
+		unloadAllLoadedByThisPlugin: ["unloadAllItemsFromSAMMI", 2, false],
+		allowUnloadingItemsLoadedByUserOrOtherPlugins: ["allowUnloadingItemsFromOutsideSAMMI", 2, true],
+		instanceIDs: ["instanceIDsArrayName", 14, ""],
+		fileNames: ["fileNamesArrayName", 14, ""]
+	});
 }
 
 function SAMMIVTS_postSAMMIMessage(message, level = 1) {
@@ -214,13 +385,24 @@ function interpretResponse(responseData) {
 			SAMMIVTS_postSAMMIMessage("Model moved");
 			break;
 		case "ItemListResponse":
-			SAMMIVTS_postSAMMIMessage("ItemListResponse");
+			if (!!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get Items List"] 
+			&& window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get Items List"][responseData.requestID]) {
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get Items List"][responseData.requestID](responseData.data);
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get Items List"][responseData.requestID] = undefined;
+			}
 			break;
 		case "ItemLoadResponse":
-			SAMMIVTS_postSAMMIMessage("ItemLoadResponse");
+			if (responseData.data && responseData.data.instanceID) {
+				SAMMIVTS_postSAMMIMessage("ItemListResponse SUCCESS: " + responseData.data.instanceID)
+				if (!!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"] 
+					&& window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"][responseData.requestID]) {
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"][responseData.requestID](responseData.data.instanceID);
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"][responseData.requestID] = undefined;
+				}
+			}
 			break;
 		case "ItemUnloadResponse":
-			SAMMIVTS_postSAMMIMessage("ItemUnloadResponse");
+			if (responseData.data && responseData.data.unloadedItems) SAMMIVTS_postSAMMIMessage("ItemUnloadResponse SUCCESS: " + responseData.data.unloadedItems)
 			break;
 		case "ItemAnimationControlResponse":
 			SAMMIVTS_postSAMMIMessage("ItemAnimationControlResponse");
@@ -321,58 +503,94 @@ function requestHotkeyTrigger(hotkeyID) {
   	sendMessageToVtubeStudio(request);
 }
 
-//TODO Implement this
-function requestItemList(hotkeyID) {
+function requestItemList(obj, includeAvailableSpots = false, includeItemInstancesInScene = false, includeAvailableItemFiles = false, onlyItemsWithFileName = "", onlyItemsWithInstanceID = "") {
 	let request = SAMMIVTS_generateBaseRequest("ItemListRequest");
+	request = {...request, ...obj};
 	request.data = {
 		...request.data,
-		"includeAvailableSpots": true,
-		"includeItemInstancesInScene": true,
-		"includeAvailableItemFiles": true,
-		// "onlyItemsWithFileName": "OPTIONAL_my_item_filename.png",
-		// "onlyItemsWithInstanceID": "OPTIONAL_InstanceIdOfItemInScene"
+		"includeAvailableSpots": includeAvailableSpots,
+		"includeItemInstancesInScene": includeItemInstancesInScene,
+		"includeAvailableItemFiles": includeAvailableItemFiles,
+		"onlyItemsWithFileName": onlyItemsWithFileName,
+		"onlyItemsWithInstanceID": onlyItemsWithInstanceID
 	};
   	sendMessageToVtubeStudio(request);
 }
 
-//TODO Implement this
-function requestLoadItem(hotkeyID) {
+function requestLoadItem(
+	{
+		requestID,
+		fileName,
+		positionX,
+		positionY,
+		size,
+		rotation,
+		fadeTime,
+		order,
+		failIfOrderTaken,
+		smoothing,
+		censored,
+		flipped,
+		locked,
+		unloadWhenPluginDisconnects
+	} = { 
+		positionX: 0,
+		positionY: 0.5,
+		size: 0.33,
+		rotation: 90,
+		fadeTime: 0.5,
+		order: 4,
+		failIfOrderTaken: false,
+		smoothing: 0,
+		censored: false,
+		flipped: false,
+		locked: false,
+		unloadWhenPluginDisconnects: true 
+	}) {
+
+	if (!fileName) return;
 	let request = SAMMIVTS_generateBaseRequest("ItemLoadRequest");
+	request.requestID = requestID;
 	request.data = {
 		...request.data,
-		"fileName": "some_item_name.jpg",
-		"positionX": 0,
-		"positionY": 0.5,
-		"size": 0.33,
-		"rotation": 90,
-		"fadeTime": 0.5,
-		"order": 4,
-		"failIfOrderTaken": false,
-		"smoothing": 0,
-		"censored": false,
-		"flipped": false,
-		"locked": false,
-		"unloadWhenPluginDisconnects": true
+		fileName,
+		positionX,
+		positionY,
+		size,
+		rotation,
+		fadeTime,
+		order,
+		failIfOrderTaken,
+		smoothing,
+		censored,
+		flipped,
+		locked,
+		unloadWhenPluginDisconnects
 	};
   	sendMessageToVtubeStudio(request);
 }
 
-//TODO Implement this
-function requestRemoveItem(hotkeyID) {
+function requestRemoveItem({
+	unloadAllInScene,
+	unloadAllLoadedByThisPlugin,
+	allowUnloadingItemsLoadedByUserOrOtherPlugins,
+	instanceIDs,
+	fileNames
+} = {
+	unloadAllInScene: false,
+	unloadAllLoadedByThisPlugin: false,
+	allowUnloadingItemsLoadedByUserOrOtherPlugins: true,
+	instanceIDs: [],
+	fileNames: []
+}) {
 	let request = SAMMIVTS_generateBaseRequest("ItemUnloadRequest");
 	request.data = {
 		...request.data,
-		"unloadAllInScene": false,
-		"unloadAllLoadedByThisPlugin": false,
-		"allowUnloadingItemsLoadedByUserOrOtherPlugins": true,
-		"instanceIDs":
-		[
-			"SomeInstanceIdOfItemToUnload", "SomeOtherInstanceIdOfItemToUnload"
-		],
-		"fileNames":
-		[
-			"UnloadAllItemInstancesWithThisFileName", "SomeOtherFileName"
-		]
+		unloadAllInScene,
+		unloadAllLoadedByThisPlugin,
+		allowUnloadingItemsLoadedByUserOrOtherPlugins,
+		instanceIDs,
+		fileNames
 	};
   	sendMessageToVtubeStudio(request);
 }
