@@ -169,13 +169,13 @@ case "VtubeStudio - Load Item": {
 
 case "VtubeStudio - Remove Item": {
 	const requestID = uuidv4();
-	// window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"][requestID] = (data) => {
-	// 	if (!!LioranBoardJSON.variable) {
-	// 		let buttonID = LioranBoardJSON.FromButton;
-	// 		SAMMI.setVariable(LioranBoardJSON.variable, data, buttonID);
-	// 		return;
-	// 	}
-	// };
+	window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Remove Item"][requestID] = (data) => {
+		if (!!LioranBoardJSON.variable) {
+			let buttonID = LioranBoardJSON.FromButton;
+			SAMMI.setVariable(LioranBoardJSON.variable, data, buttonID);
+			return;
+		}
+	};
 	const {
 		unloadAllInScene,
 		unloadAllLoadedByThisPlugin,
@@ -187,6 +187,7 @@ case "VtubeStudio - Remove Item": {
 	SAMMI.getVariable(instanceIDsArrayName, LioranBoardJSON.FromButton).then(instanceIDs => {
 		SAMMI.getVariable(fileNamesArrayName, LioranBoardJSON.FromButton).then(fileNames => {
 			requestRemoveItem({
+				requestID,
 				unloadAllInScene,
 				unloadAllLoadedByThisPlugin,
 				allowUnloadingItemsLoadedByUserOrOtherPlugins,
@@ -195,9 +196,99 @@ case "VtubeStudio - Remove Item": {
 			});
 		});
 	});
+} break
 
+case "VtubeStudio - Control Animation": {
+	const requestID = uuidv4();
+	//TODO Do we need this? What are the return variables?
+	// window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Remove Item"][requestID] = (data) => {
+	// 	if (!!LioranBoardJSON.variable) {
+	// 		let buttonID = LioranBoardJSON.FromButton;
+	// 		SAMMI.setVariable(LioranBoardJSON.variable, data, buttonID);
+	// 		return;
+	// 	}
+	// };
+
+	const {
+		itemInstanceID,
+		framerate,
+		frame,
+		brightness,
+		opacity,
+		setAutoStopFrames,
+		autoStopFrames,
+		setAnimationPlayState,
+		animationPlayState
+	} = LioranBoardJSON;
+
+	if (autoStopFrames && autoStopFrames !== "") {
+		SAMMI.getVariable(autoStopFrames, LioranBoardJSON.FromButton).then(autoStopFramesVariable => {
+			requestItemAnimationControl({
+				requestID,
+				itemInstanceID,
+				framerate,
+				frame,
+				brightness,
+				opacity,
+				setAutoStopFrames,
+				autoStopFrames: autoStopFramesVariable.value,
+				setAnimationPlayState,
+				animationPlayState
+			});
+		});
+		return;
+	}
 	
+	requestItemAnimationControl({
+		requestID,
+		itemInstanceID,
+		framerate,
+		frame,
+		brightness,
+		opacity,
+		setAutoStopFrames,
+		autoStopFrames: null,
+		setAnimationPlayState,
+		animationPlayState
+	});
+} break
 
+case "VtubeStudio - Move Item": {
+	const requestID = uuidv4();
+	//TODO Do we need this? What are the return variables?
+	// window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Remove Item"][requestID] = (data) => {
+	// 	if (!!LioranBoardJSON.variable) {
+	// 		let buttonID = LioranBoardJSON.FromButton;
+	// 		SAMMI.setVariable(LioranBoardJSON.variable, data, buttonID);
+	// 		return;
+	// 	}
+	// };
+
+	const {
+		itemsToMove: itemsToMoveVariableName
+	} = LioranBoardJSON;
+
+	if (itemsToMoveVariableName && itemsToMoveVariableName !== "") {
+		SAMMI.getVariable(itemsToMoveVariableName, LioranBoardJSON.FromButton).then(itemsToMoveVariable => {
+			requestItemMove({
+				requestID,
+				itemsToMove: itemsToMoveVariable.value
+			});
+		});
+		return;
+	}
+} break
+
+case "VtubeStudio - Get VTS Info": {
+	const requestID = uuidv4();
+	window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get VTS Info"][requestID] = (data) => {
+		if (!!LioranBoardJSON.variable) {
+			let buttonID = LioranBoardJSON.FromButton;
+			if (!LioranBoardJSON.pullValue || LioranBoardJSON.pullValue == "") {SAMMI.setVariable(LioranBoardJSON.variable, data, buttonID); return;}
+			SAMMI.setVariable(LioranBoardJSON.variable, data[LioranBoardJSON.pullValue] || undefined, buttonID);
+		}
+	};
+	requestVTSStats({requestID: requestID});
 } break
 
 [insert_script]
@@ -214,6 +305,8 @@ window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`] = {};
 window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Pull Value"] = [];
 window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get Items List"] = [];
 window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"] = [];
+window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Remove Item"] = [];
+window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get VTS Info"] = [];
 
 const SAMMIVTS_generateBaseRequest = (messageType) => {
 	return {
@@ -237,6 +330,19 @@ VTUBESTUDIO_WebSocket_ReadyStates = {
 };
 
 function SAMMIVTS_insertBaseCommands() {
+	const vtsStatsProps = [
+		"*leave blank to save entire response*",
+		"uptime",
+		"framerate",
+		"vTubeStudioVersion",
+		"allowedPlugins",
+		"connectedPlugins",
+		"startedWithSteam",
+		"windowWidth",
+		"windowHeight",
+		"windowIsFullscreen",
+	];
+
 	const commonModelDataProps = [
 		"*leave blank to save entire response*",
 		"modelID", 
@@ -302,6 +408,31 @@ function SAMMIVTS_insertBaseCommands() {
 		allowUnloadingItemsLoadedByUserOrOtherPlugins: ["allowUnloadingItemsFromOutsideSAMMI", 2, true],
 		instanceIDs: ["instanceIDsArrayName", 14, ""],
 		fileNames: ["fileNamesArrayName", 14, ""]
+	});
+
+	SAMMI.extCommand("VtubeStudio - Control Animation",3355443, 80, {
+		variable: ["Variable (Not used)", 14, ""],
+		itemInstanceID: ["itemInstanceID", 14, ""],
+		framerate: ["framerate", 14, "12"],
+		frame: ["frame", 14, "0"],
+		brightness: ["brightness", 14, "1"],
+		opacity: ["opacity", 14, "1"],
+		setAutoStopFrames: ["setAutoStopFrames", 2, false],
+		autoStopFrames: ["autoStopFrames", 14, ""],
+		setAnimationPlayState: ["setAnimationPlayState", 2, true],
+		animationPlayState: ["animationPlayState", 2, true]
+	});
+
+	//TODO Can we make this better?
+	SAMMI.extCommand("VtubeStudio - Move Item",3355443, 80, {
+		variable: ["Variable (Not used)", 14, ""],
+		itemsToMove: ["itemsToMove Variable Name", 14, ""],
+		dev_note: ["Request model", 0, `{\n"itemInstanceID": "ItemInstanceId",\n"timeInSeconds": 1,\n"fadeMode": "easeOut",\n"positionX": 0.2,\n"positionY": -0.8,\n"size": 0.6,\n"rotation": 180,\n"order": -1000,\n"setFlip": true,\n"flip": false,\n"userCanStop": true\n}`]
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get VTS Info",3355443, 30, {
+		variable: ["Save Into Variable", 14, ""],
+		pullValue: ["Pull Value", 20, "", null, vtsStatsProps],
 	});
 }
 
@@ -393,7 +524,7 @@ function interpretResponse(responseData) {
 			break;
 		case "ItemLoadResponse":
 			if (responseData.data && responseData.data.instanceID) {
-				SAMMIVTS_postSAMMIMessage("ItemListResponse SUCCESS: " + responseData.data.instanceID)
+				SAMMIVTS_postConsoleMessage("ItemListResponse SUCCESS: " + responseData.data.instanceID)
 				if (!!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"] 
 					&& window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"][responseData.requestID]) {
 						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Load Item"][responseData.requestID](responseData.data.instanceID);
@@ -402,14 +533,24 @@ function interpretResponse(responseData) {
 			}
 			break;
 		case "ItemUnloadResponse":
-			if (responseData.data && responseData.data.unloadedItems) SAMMIVTS_postSAMMIMessage("ItemUnloadResponse SUCCESS: " + responseData.data.unloadedItems)
+			if (responseData.data && responseData.data.unloadedItems) {
+				SAMMIVTS_postConsoleMessage("ItemUnloadResponse SUCCESS: " + responseData.data.unloadedItems)
+				if (!!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Remove Item"] 
+					&& window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Remove Item"] [responseData.requestID]) {
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Remove Item"] [responseData.requestID](responseData.data.instanceID);
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Remove Item"] [responseData.requestID] = undefined;
+				}
+			}
 			break;
 		case "ItemAnimationControlResponse":
-			SAMMIVTS_postSAMMIMessage("ItemAnimationControlResponse");
+			if (responseData.data && responseData.data.animationPlaying !== undefined) {
+				SAMMIVTS_postSAMMIMessage("ItemAnimationControlResponse SUCCESS");
+			}
 			break;
 		case "ItemMoveResponse":
-			//If the request was successful, you will just receive an empty response.
-			SAMMIVTS_postSAMMIMessage("Item Moved");
+			if (responseData.data && responseData.data.movedItems) {
+				SAMMIVTS_postSAMMIMessage("ItemMoveResponse SUCCESS");
+			}
 			break;
 		case "CurrentModelResponse":
 			if (!!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Pull Value"] 
@@ -418,6 +559,13 @@ function interpretResponse(responseData) {
 				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Pull Value"][responseData.requestID] = undefined;
 			}
 			window[`${VTUBESTUDIO_PLUGINNAME}_CurrentModelData`] = responseData.data; //TODO Need this?
+			break;
+		case "StatisticsResponse":
+			if (!!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get VTS Info"] 
+			&& window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get VTS Info"][responseData.requestID]) {
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get VTS Info"][responseData.requestID](responseData.data);
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get VTS Info"][responseData.requestID] = undefined;
+			}
 			break;
 		case 'APIError':
 			SAMMIVTS_postSAMMIMessage("Received an error from the API: " + responseData.data.errorID + ": " + responseData.data.message);
@@ -571,6 +719,7 @@ function requestLoadItem(
 }
 
 function requestRemoveItem({
+	requestID,
 	unloadAllInScene,
 	unloadAllLoadedByThisPlugin,
 	allowUnloadingItemsLoadedByUserOrOtherPlugins,
@@ -584,6 +733,7 @@ function requestRemoveItem({
 	fileNames: []
 }) {
 	let request = SAMMIVTS_generateBaseRequest("ItemUnloadRequest");
+	request.requestID = requestID;
 	request.data = {
 		...request.data,
 		unloadAllInScene,
@@ -595,39 +745,57 @@ function requestRemoveItem({
   	sendMessageToVtubeStudio(request);
 }
 
-//TODO Implement this
-function requestItemAnimationControl(hotkeyID) {
+function requestItemAnimationControl({
+	requestID,
+	itemInstanceID,
+	framerate,
+	frame,
+	brightness,
+	opacity,
+	setAutoStopFrames,
+	autoStopFrames,
+	setAnimationPlayState,
+	animationPlayState
+  } = {
+	framerate: 12,
+	frame: 3,
+	brightness: 1,
+	opacity: 1,
+	setAutoStopFrames: true,
+	autoStopFrames: [
+	  0,
+	  7,
+	  26
+	],
+	setAnimationPlayState: true,
+	animationPlayState: true
+  }
+  ) {
 	let request = SAMMIVTS_generateBaseRequest("ItemAnimationControlRequest");
+	request.requestID = requestID;
 	request.data = {
 		...request.data,
-		"itemInstanceID": "ItemInstanceId",
-		"framerate": 12,
-		"frame": 3,
-		"brightness": 1,
-		"opacity": 1,
-		"setAutoStopFrames": true,
-		"autoStopFrames": [0, 7, 26],
-		"setAnimationPlayState": true,
-		"animationPlayState": true
+		itemInstanceID,
+		framerate,
+		frame,
+		brightness,
+		opacity,
+		setAutoStopFrames,
+		autoStopFrames,
+		setAnimationPlayState,
+		animationPlayState
 	};
   	sendMessageToVtubeStudio(request);
 }
 
-//TODO Implement this
-function requestItemMove(hotkeyID) {
+function requestItemMove({requestID, itemsToMove}) {
+	if (itemsToMove.length < 1) return;
+	if (typeof itemsToMove[0] == "string") itemsToMove = itemsToMove.map(e => { return JSON.parse(e) });
 	let request = SAMMIVTS_generateBaseRequest("ItemMoveRequest");
+	request.requestID = requestID;
 	request.data = {
 		...request.data,
-		"itemInstanceID": "ItemInstanceId",
-		"timeInSeconds": 1,	
-		"fadeMode": "easeOut",
-		"positionX": 0.2,
-		"positionY": -0.8,
-		"size": 0.6,
-		"rotation": 180,
-		"setFlip": true,
-		"flip": false,
-		"userCanStop": true	
+		itemsToMove
 	}
   	sendMessageToVtubeStudio(request);
 }
@@ -691,6 +859,13 @@ function requestCurrentModelData(obj) {
 	request = {...request, ...obj};
 	sendMessageToVtubeStudio(request);
 }
+
+function requestVTSStats({requestID}) {
+	let request = SAMMIVTS_generateBaseRequest("StatisticsRequest");
+	request.requestID = requestID;
+  	sendMessageToVtubeStudio(request);
+}
+
 
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
