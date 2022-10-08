@@ -33,7 +33,7 @@ Written by Hue, the Centipede Youkai
 
 [insert_hook]
 case "VtubeStudio - Send Hotkey":{
-	const hotkey = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].find(h => LioranBoardJSON.Hotkey === getVTSHotKeyIdentifier(h.hotkeyName, h.modelName));
+	const hotkey = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].find(h => LioranBoardJSON.Hotkey === getVTSHotKeyIdentifier(h.hotkeyName.toLowerCase(), h.modelName.toLowerCase()));
 	if (!!hotkey) {
 		requestHotkeyTrigger(hotkey.hotkeyID);
 	}
@@ -321,7 +321,7 @@ function SAMMIVTS_postConsoleMessage(message) {
 }
 
 function getVTSHotKeyIdentifier(hotkeyName, modelName) {
-	return `${hotkeyName} - (${modelName})`;
+	return `${hotkeyName.toLowerCase()} - (${modelName.toLowerCase()})`;
 }
 
 function interpretResponse(responseData) {
@@ -365,14 +365,14 @@ function interpretResponse(responseData) {
 			
 			window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].concat(responseData.data.availableHotkeys.filter(hotkey => !!hotkey.name && hotkey.name !== "").map(hotkey => { 
 				return {
-					hotkeyName: hotkey.name, 
+					hotkeyName: hotkey.name.toLowerCase(), 
 					hotkeyID: hotkey.hotkeyID, 
-					modelName: responseData.data.modelName
+					modelName: responseData.data.modelName.toLowerCase()
 				}; 
 			}));
 
 			SAMMI.extCommand("VtubeStudio - Send Hotkey",3355443, 52, {
-				Hotkey: ['Hotkey', 19, null, null, window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].map(hotkey => getVTSHotKeyIdentifier(hotkey.hotkeyName, hotkey.modelName))]
+				Hotkey: ['Hotkey', 19, null, null, window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].map(hotkey => getVTSHotKeyIdentifier(hotkey.hotkeyName.toLowerCase(), hotkey.modelName.toLowerCase()))]
 			  });
 			break;
 		case "HotkeyTriggerResponse":
