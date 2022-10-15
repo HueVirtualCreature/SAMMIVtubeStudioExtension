@@ -34,7 +34,7 @@ Written by Hue, the Centipede Youkai
 
 [insert_hook]
 case "VtubeStudio - Send Hotkey":{
-	const hotkey = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].find(h => LioranBoardJSON.Hotkey === getVTSHotKeyIdentifier(h.hotkeyName.toLowerCase(), h.modelName.toLowerCase()));
+	const hotkey = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].find(h => LioranBoardJSON.Hotkey.toLowerCase() === getVTSHotKeyIdentifier(h.hotkeyName.toLowerCase(), h.modelName.toLowerCase()));
 	if (!!hotkey) {
 		requestHotkeyTrigger(hotkey.hotkeyID);
 	}
@@ -559,7 +559,6 @@ function interpretResponse(responseData) {
 				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Pull Value"][responseData.requestID](responseData.data);
 				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Pull Value"][responseData.requestID] = undefined;
 			}
-			window[`${VTUBESTUDIO_PLUGINNAME}_CurrentModelData`] = responseData.data; //TODO Need this?
 			break;
 		case "StatisticsResponse":
 			if (!!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Get VTS Info"] 
@@ -891,6 +890,7 @@ function SAMMIVTS_initialize() {
 		SAMMIVTS_postSAMMIMessage("Initializing...");
 		SAMMIVTS_insertBaseCommands();
 		createVTSWebSocketClient();
+
 		return;
 	}
 
