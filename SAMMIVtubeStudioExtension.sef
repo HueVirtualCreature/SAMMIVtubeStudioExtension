@@ -292,6 +292,11 @@ case "VtubeStudio - Get VTS Info": {
 	requestVTSStats({requestID: requestID});
 } break
 
+case "VtubeStudio - Listen to Event": {
+	const requestID = uuidv4();
+	requestVTSStats({requestID: requestID});
+} break
+
 [insert_script]
 const VTUBESTUDIO_SERVER = 'ws://localhost:8001';
 const VTUBESTUDIO_PLUGINNAME = "SAMMIVtubeStudioExtension";
@@ -434,6 +439,31 @@ function SAMMIVTS_insertBaseCommands() {
 	SAMMI.extCommand("VtubeStudio - Get VTS Info",3355443, 30, {
 		variable: ["Save Into Variable", 14, ""],
 		pullValue: ["Pull Value", 20, "", null, vtsStatsProps],
+	});
+
+	/*
+	
+    Test event
+    Model loaded/unloaded
+    Lost/Found tracking
+    Background changed
+    Model config modified
+    Model moved/resized/rotated
+    Model outline changed
+
+	*/
+	const events = [
+		"TestEvent",
+		"ModelLoadedEvent",
+		"TrackingStatusChangedEvent",
+		"BackgroundChangedEvent",
+		"ModelConfigChangedEvent",
+		"ModelMovedEvent",
+		"ModelOutlineEvent"
+	];
+
+	SAMMI.extCommand("VtubeStudio - Listen to Event",3355443, 80, {
+		Event: ["Event", 20, "", null, events]
 	});
 }
 
@@ -866,6 +896,18 @@ function requestVTSStats({requestID}) {
   	sendMessageToVtubeStudio(request);
 }
 
+function requestVTSEventSubscription({requestID, event}) {
+	let request = SAMMIVTS_generateBaseRequest("EventSubscriptionRequest");
+	request.requestID = requestID;
+	request.data = {
+		"eventName": event,
+			"subscribe": true,
+			"config": {
+				
+			}
+	};
+  	sendMessageToVtubeStudio(request);
+}
 
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
