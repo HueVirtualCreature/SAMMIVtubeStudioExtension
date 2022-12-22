@@ -35,6 +35,23 @@ This extension requires the following:
 #### Commands
 This guide assumes that you are familiar with SAMMI/LioranBoard 2's Deck, Button, and Commands system(s). We will not go into detail on basic setup.
 
+##### VtubeStudio - Request Token
+⚠️ This command automatically inserts an authentication token into the global variable space! All commands will look for this variable in order to run!
+Requests a token from VTS. Saves the token into global.SAMMIVtubeStudioExtension_AuthToken.
+
+Param  | Description
+------------- | -------------
+None  | None
+
+##### VtubeStudio - Authenticate
+Uses a token to authenticate with the VTS API Server.
+If successful, sets global.SAMMIVtubeStudioExtension_IsAuthenticated to 1. Otherwise, 0.
+⚠️ This commands needs to run first, before all other commands (except VtubeStudio - Request Token)
+
+Param  | Description
+------------- | -------------
+None  | None
+
 ##### VtubeStudio - Get VTS Info
 Allows one to pull info about the connection to VtubeStudio and some stats/metrics
 
@@ -100,21 +117,21 @@ onlyItemsWithInstanceID |  Filter for only returning items with a specific insta
 Delay (ms) | Native to SAMMI
 
 ##### VtubeStudio - Load Item
-WIP
+Loads a specified item into the scene.
 
 ##### VtubeStudio - Move Item
-WIP
+Moves an existing/already loaded scene item.
 
 ##### VtubeStudio - Control Animation
-WIP
+Controls the animation and other visual details of a loaded Scene Item.
 
 ##### VtubeStudio - Remove Item
-WIP
+Removes a loaded Scene Item.
 
 ------------
 ### Common Problems
 ##### None of the commands are loaded
-WIP
+SAMMI Bridge (previously LioranBoard 2's Transmitter) needs to be open and connected to SAMMI Client.
 
 ##### Hotkey will not trigger
 WIP
