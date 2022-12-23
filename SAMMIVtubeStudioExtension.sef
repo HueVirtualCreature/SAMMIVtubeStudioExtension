@@ -252,7 +252,9 @@ case "VtubeStudio - Get VTS Info": {
 } break
 
 [insert_script]
-const VTUBESTUDIO_SERVER = 'ws://localhost:8001';
+const VTUBESTUDIO_DEFAULTSERVER = 'ws://localhost';
+const VTUBESTUDIO_DEFAULTPORT = "8001";
+
 const VTUBESTUDIO_PLUGINNAME = "SAMMIVtubeStudioExtension";
 const VTUBESTUDIO_AUTHORNAME = "Hue_vCreature";
 const VTUBESTUDIO_PLUGIN_ICON64 = `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`;
@@ -273,6 +275,10 @@ VTUBESTUDIO_WebSocket_ReadyStates = { CONNECTING: 0, OPEN: 1, CLOSING: 2, CLOSED
 
 //Inserts base extension commands into SAMMI
 function SAMMIVTS_insertBaseCommands() {
+	const param_ServerAddr = {PortNumber: ["VTS Server", 15, VTUBESTUDIO_DEFAULTSERVER]};
+	const param_PortNumber = {PortNumber: ["Port", 15, VTUBESTUDIO_DEFAULTPORT]};
+	const param_TokenField = {AuthToken: ["Auth Token", 15, ""]};
+
 	const vtsStatsProps = [
 		"*leave blank to save entire response*",
 		"uptime",
@@ -303,14 +309,14 @@ function SAMMIVTS_insertBaseCommands() {
 
 	//This is used to trigger the initial authentication
 	SAMMI.extCommand("VtubeStudio - Request Token",3355443, 52, {
-		//Token: ["Save Token to Variable", 14, ""] //When the server responds with the auth token, save to global OR user-defined variable
-		dev_note: ["Dev Note", 0, "This is used to request a token from vTubestudio. The server will return with a token and save that to a global variable"]
+		dev_note: ["Dev Note", 0, "This is used to request a token from vTubestudio. The server will return with a token and save that to a global variable"],
+		...param_PortNumber
 	});
 
 	//This is used to trigger the initial authentication
 	SAMMI.extCommand("VtubeStudio - Authenticate",3355443, 52, {
-		//Token: ["Save Token to Variable", 14, ""] //When the server responds with the auth token, save to global OR user-defined variable
-		dev_note: ["Dev Note", 0, "This is used to authenticate with vTubestudio. The auth state will be saved to global"]
+		dev_note: ["Dev Note", 0, "This is used to authenticate with vTubestudio. The auth state will be saved to global"],
+		...param_PortNumber
 	});
 
 	SAMMI.extCommand("VtubeStudio - Move Model",3355443, 52, {
@@ -321,14 +327,17 @@ function SAMMIVTS_insertBaseCommands() {
 		rotation: ["Rotation", 14, "360"],
 		time: ["Time (0-2)", 14, "0.5"],
 		relative: ["Relative Values", 2, false],
-		dev_note: ["Dev Note", 0, "This one doesn't work super \nwell mainly because you have to \ndo a lot of trial and error to get \nthe numbers just right....\ngood luck! Changing the \ncontents of this textbox \ndoes nothing, by the way."]
+		dev_note: ["Dev Note", 0, "This one doesn't work super \nwell mainly because you have to \ndo a lot of trial and error to get \nthe numbers just right....\ngood luck! Changing the \ncontents of this textbox \ndoes nothing, by the way."],
+		...param_PortNumber
 	 });
 	
 	
 	 SAMMI.extCommand("VtubeStudio - Pull Value",3355443, 52, {
+		...param_PortNumber,
 		Variable: ["Variable", 14, ""],
 		PullValue: ["Pull Value", 20, "", null, commonModelDataProps],
-		Global: ["Global", 2, false]
+		Global: ["Global", 2, false],
+		...param_PortNumber
 	});
 
 	SAMMI.extCommand("VtubeStudio - Get Items List",3355443, 80, {
@@ -337,7 +346,8 @@ function SAMMIVTS_insertBaseCommands() {
 		includeItemInstancesInScene: ["includeItemInstancesInScene", 2, false],
 		includeAvailableItemFiles: ["includeAvailableItemFiles", 2, false],
 		onlyItemsWithFileName: ["onlyItemsWithFileName", 14, ""],
-		onlyItemsWithInstanceID: ["onlyItemsWithInstanceID", 14, ""]
+		onlyItemsWithInstanceID: ["onlyItemsWithInstanceID", 14, ""],
+		...param_PortNumber
 	});
 
 	SAMMI.extCommand("VtubeStudio - Load Item",3355443, 80, {
@@ -354,7 +364,8 @@ function SAMMIVTS_insertBaseCommands() {
 		censored: ["censored", 2, false],
 		flipped: ["flipped", 2, false],
 		locked: ["locked", 2, false],
-		unloadWhenPluginDisconnects: ["unloadWhenPluginDisconnects", 2, true]
+		unloadWhenPluginDisconnects: ["unloadWhenPluginDisconnects", 2, true],
+		...param_PortNumber
 	});
 
 	SAMMI.extCommand("VtubeStudio - Remove Item",3355443, 80, {
@@ -363,7 +374,8 @@ function SAMMIVTS_insertBaseCommands() {
 		unloadAllLoadedByThisPlugin: ["unloadAllItemsFromSAMMI", 2, false],
 		allowUnloadingItemsLoadedByUserOrOtherPlugins: ["allowUnloadingItemsFromOutsideSAMMI", 2, true],
 		instanceIDs: ["instanceIDsArrayName", 14, ""],
-		fileNames: ["fileNamesArrayName", 14, ""]
+		fileNames: ["fileNamesArrayName", 14, ""],
+		...param_PortNumber
 	});
 
 	SAMMI.extCommand("VtubeStudio - Control Animation",3355443, 80, {
@@ -376,19 +388,22 @@ function SAMMIVTS_insertBaseCommands() {
 		setAutoStopFrames: ["setAutoStopFrames", 2, false],
 		autoStopFrames: ["autoStopFrames", 14, ""],
 		setAnimationPlayState: ["setAnimationPlayState", 2, true],
-		animationPlayState: ["animationPlayState", 2, true]
+		animationPlayState: ["animationPlayState", 2, true],
+		...param_PortNumber
 	});
 
 	//TODO Move Items UI needs to be improved to be more user friendly
 	SAMMI.extCommand("VtubeStudio - Move Item",3355443, 80, {
 		variable: ["Variable (Not used)", 14, ""],
 		itemsToMove: ["itemsToMove Variable Name", 14, ""],
-		dev_note: ["Request model", 0, `{\n"itemInstanceID": "ItemInstanceId",\n"timeInSeconds": 1,\n"fadeMode": "easeOut",\n"positionX": 0.2,\n"positionY": -0.8,\n"size": 0.6,\n"rotation": 180,\n"order": -1000,\n"setFlip": true,\n"flip": false,\n"userCanStop": true\n}`]
+		dev_note: ["Request model", 0, `{\n"itemInstanceID": "ItemInstanceId",\n"timeInSeconds": 1,\n"fadeMode": "easeOut",\n"positionX": 0.2,\n"positionY": -0.8,\n"size": 0.6,\n"rotation": 180,\n"order": -1000,\n"setFlip": true,\n"flip": false,\n"userCanStop": true\n}`],
+		...param_PortNumber
 	});
 
 	SAMMI.extCommand("VtubeStudio - Get VTS Info",3355443, 30, {
 		variable: ["Save Into Variable", 14, ""],
 		pullValue: ["Pull Value", 20, "", null, vtsStatsProps],
+		...param_PortNumber
 	});
 }
 
@@ -425,7 +440,8 @@ function interpretResponse(responseData) {
 			window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = [];
 
 			SAMMI.extCommand("VtubeStudio - Load Model",3355443, 52, { 
-				Model: ['Model to Load', 19, null, null, window[`${VTUBESTUDIO_PLUGINNAME}_Models`].map(m => `${m.modelName}`)]
+				Model: ['Model to Load', 19, null, null, window[`${VTUBESTUDIO_PLUGINNAME}_Models`].map(m => `${m.modelName}`)],
+				...param_PortNumber
 			})
 			
 			//TODO Eesh, race condition maybe. Find a better way
@@ -445,7 +461,8 @@ function interpretResponse(responseData) {
 			}));
 
 			SAMMI.extCommand("VtubeStudio - Send Hotkey",3355443, 52, {
-				Hotkey: ['Hotkey', 19, null, null, window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].map(hotkey => getVTSHotKeyIdentifier(hotkey.hotkeyName.toLowerCase(), hotkey.modelName.toLowerCase()))]
+				Hotkey: ['Hotkey', 19, null, null, window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].map(hotkey => getVTSHotKeyIdentifier(hotkey.hotkeyName.toLowerCase(), hotkey.modelName.toLowerCase()))],
+				...param_PortNumber
 			  });
 			break;
 		case "HotkeyTriggerResponse":
@@ -518,10 +535,11 @@ function interpretResponse(responseData) {
 }
 
 //Create the socket by which to faciliate comms with VTS with
+//FIXME For the variable port idea, we need to spawn multiple sockets....? Potentially...?
 function createVTSWebSocketClient(callback = null) {
 	SAMMIVTS_postSAMMIMessage('Checking client');
 	if (!window.VTUBESTUDIO_WebSocket || window.VTUBESTUDIO_WebSocket.readyState === VTUBESTUDIO_WebSocket_ReadyStates.CLOSED) {
-		window.VTUBESTUDIO_WebSocket = new WebSocket(VTUBESTUDIO_SERVER);
+		window.VTUBESTUDIO_WebSocket = new WebSocket(VTUBESTUDIO_DEFAULTSERVER);
 
 		//Add Event Handlers
 		window.VTUBESTUDIO_WebSocket.onmessage = function(event) {
