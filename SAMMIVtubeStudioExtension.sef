@@ -536,10 +536,10 @@ function interpretResponse(responseData) {
 
 //Create the socket by which to faciliate comms with VTS with
 //FIXME For the variable port idea, we need to spawn multiple sockets....? Potentially...?
-function createVTSWebSocketClient(callback = null) {
+function createVTSWebSocketClient(serverAddress = VTUBESTUDIO_DEFAULTSERVER, portNumber = VTUBESTUDIO_DEFAULTPORT, callback = null) {
 	SAMMIVTS_postSAMMIMessage('Checking client');
 	if (!window.VTUBESTUDIO_WebSocket || window.VTUBESTUDIO_WebSocket.readyState === VTUBESTUDIO_WebSocket_ReadyStates.CLOSED) {
-		window.VTUBESTUDIO_WebSocket = new WebSocket(VTUBESTUDIO_DEFAULTSERVER);
+		window.VTUBESTUDIO_WebSocket = new WebSocket(`${VTUBESTUDIO_DEFAULTSERVER}:${VTUBESTUDIO_DEFAULTPORT}`);
 
 		//Add Event Handlers
 		window.VTUBESTUDIO_WebSocket.onmessage = function(event) {
@@ -554,7 +554,7 @@ function createVTSWebSocketClient(callback = null) {
 		window.VTUBESTUDIO_WebSocket.onclose = function(event) {
 			SAMMIVTS_postConsoleMessage(`Disconnected(${event.code || "No code provided"}, ${event.reason || "No reason provided"}), reconnecting in 5 seconds`);
 			SAMMIVTS_postSAMMIMessage('Socket disconnected, reconnecting in 5 seconds');
-			setTimeout(createVTSWebSocketClient, 5000);
+			setTimeout(() => { createVTSWebSocketClient(serverAddress, portNumber); }, 5000);
 		}
 
 		window.VTUBESTUDIO_WebSocket.onopen = function(event) {
@@ -564,7 +564,7 @@ function createVTSWebSocketClient(callback = null) {
 	}
 	else if (window.VTUBESTUDIO_WebSocket.readyState === VTUBESTUDIO_WebSocket_ReadyStates.CLOSING) {
 		SAMMIVTS_postConsoleMessage(`Closure pending, waiting 5 seconds to reopen`);
-		setTimeout(() => { createVTSWebSocketClient(callback); }, 5000);
+		setTimeout(() => { createVTSWebSocketClient(serverAddress, portNumber, callback); }, 5000);
 		return;
 	}
 
@@ -572,7 +572,7 @@ function createVTSWebSocketClient(callback = null) {
 }
 
 //#region Request Functions for VTS
-function sendMessageToVtubeStudio(request) {
+function sendMessageToVtubeStudio(request) { //TODO We need a way to specify WHICH websocket to hit, 
 	//TODO Need better retry logic, maybe implement a queuing system? Also, how do you spell that word?
 	if (window.VTUBESTUDIO_WebSocket) {
 		if ( window.VTUBESTUDIO_WebSocket.readyState == VTUBESTUDIO_WebSocket_ReadyStates.OPEN) {
