@@ -24,7 +24,7 @@ Written by Hue, the Centipede Youkai
     <a href="https://github.com/HueVirtualCreature/SAMMIVtubeStudioExtension">GitHub</a>
     <p>You may access the commands under Extension Commands > SAMMI Bridge > VTubeStudio*</p>
     <p>Please keep in mind that the Bridge MUST BE OPEN in order for any of its commands to work.</p>
-    <p>Version: v1.5.0.0</p>
+    <p>Version: TEST</p>
 	<button class="btn btn-primary btn-sm" onclick="requestRefresh();">Refresh Model and Hotkey Lists</button>
   </div>
 </div>
@@ -38,7 +38,7 @@ case "VtubeStudio - Request Token":{
 	window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Request Token"][requestID] = (data) => {
 		SAMMI.setVariable("SAMMIVtubeStudioExtension_AuthToken", data.authenticationToken || undefined); //Hardcoded to save to Global
 	};
-	createVTSWebSocketClient(() => {requestVtubeStudioAuthenticationToken({requestID: requestID});});
+	createVTSWebSocketClient(null, (LioranBoardJSON.PortNumber || VTUBESTUDIO_DEFAULTPORT), () => {requestVtubeStudioAuthenticationToken({requestID: requestID});});
 } break
 
 case "VtubeStudio - Authenticate":{
@@ -48,7 +48,7 @@ case "VtubeStudio - Authenticate":{
 		if (data.authenticated == false) SAMMIVTS_postConsoleMessage("The VTS server failed to authenticate the extension");
 		SAMMI.setVariable("SAMMIVtubeStudioExtension_IsAuthenticated", data.authenticated || false); //Hardcoded to save to Global
 	};
-	createVTSWebSocketClient(() => { requestAuthentication({requestID: requestID}); });
+	createVTSWebSocketClient(null, (LioranBoardJSON.PortNumber || VTUBESTUDIO_DEFAULTPORT), () => { requestAuthentication({requestID: requestID}); });
 	
 } break
 
@@ -275,7 +275,7 @@ VTUBESTUDIO_WebSocket_ReadyStates = { CONNECTING: 0, OPEN: 1, CLOSING: 2, CLOSED
 
 //Inserts base extension commands into SAMMI
 function SAMMIVTS_insertBaseCommands() {
-	const param_ServerAddr = {PortNumber: ["VTS Server", 15, VTUBESTUDIO_DEFAULTSERVER]};
+	const param_ServerAddr = {VTSServer: ["VTS Server", 15, VTUBESTUDIO_DEFAULTSERVER]};
 	const param_PortNumber = {PortNumber: ["Port", 15, VTUBESTUDIO_DEFAULTPORT]};
 	const param_TokenField = {AuthToken: ["Auth Token", 15, ""]};
 
