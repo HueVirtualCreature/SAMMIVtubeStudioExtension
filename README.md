@@ -143,14 +143,15 @@ Variable |  Variable to save the response into
 Delay (ms) | Native to SAMMI
 
 ###### VtubeStudio Extension Triggers
-These are valid events that the extension will fire
-VTSEvent - TestEvent
-VTSEvent - ModelLoadedEvent
-VTSEvent - TrackingStatusChangedEvent
-VTSEvent - BackgroundChangedEvent
-VTSEvent - ModelConfigChangedEvent
-VTSEvent - ModelMovedEvent
-VTSEvent - ModelOutlineEvent
+These are valid events that the extension will fire.
+Enter one of these strings into the text box of the Extension Trigger type Trigger of a Button
+- VTSEvent - TestEvent
+- VTSEvent - ModelLoadedEvent
+- VTSEvent - TrackingStatusChangedEvent
+- VTSEvent - BackgroundChangedEvent
+- VTSEvent - ModelConfigChangedEvent
+- VTSEvent - ModelMovedEvent
+- VTSEvent - ModelOutlineEvent
 
 ------------
 ### Common Problems
