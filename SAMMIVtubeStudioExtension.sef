@@ -38,7 +38,7 @@ case "VtubeStudio - Request Token":{
 	window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]["VtubeStudio - Request Token"][requestID] = (data) => {
 		SAMMI.setVariable("SAMMIVtubeStudioExtension_AuthToken", data.authenticationToken || undefined); //Hardcoded to save to Global
 	};
-	createVTSWebSocketClient(null, (LioranBoardJSON.PortNumber || VTUBESTUDIO_DEFAULTPORT), () => {requestVtubeStudioAuthenticationToken({requestID: requestID});});
+	createVTSWebSocketClient((LioranBoardJSON.VTSServer || VTUBESTUDIO_DEFAULTSERVER), (LioranBoardJSON.PortNumber || VTUBESTUDIO_DEFAULTPORT), () => {requestVtubeStudioAuthenticationToken({requestID: requestID});});
 } break
 
 case "VtubeStudio - Authenticate":{
@@ -598,7 +598,7 @@ function sendMessageToVtubeStudio(request) { //TODO We need a way to specify WHI
 	}
 };
 
-async function requestVtubeStudioAuthenticationToken({requestID}) {
+async function requestVtubeStudioAuthenticationToken({serverAddress, portNumber, requestID}) {
 	SAMMIVTS_postSAMMIMessage('Plugin is asking for authentication in VTube Studio', 0);
 	const request = await SAMMIVTS_generateBaseRequest("AuthenticationTokenRequest");
 	request.requestID = requestID;
@@ -606,7 +606,7 @@ async function requestVtubeStudioAuthenticationToken({requestID}) {
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestAuthentication({requestID}) {
+async function requestAuthentication({serverAddress, portNumber, requestID}) {
 	let request = await SAMMIVTS_generateBaseRequest("AuthenticationRequest");
 	request.requestID = requestID;
 	sendMessageToVtubeStudio(request);
