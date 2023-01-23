@@ -128,10 +128,35 @@ Controls the animation and other visual details of a loaded Scene Item.
 ##### VtubeStudio - Remove Item
 Removes a loaded Scene Item.
 
+##### VtubeStudio - Listen to Event
+Param  | Description
+------------- | -------------
+Event | Select. The event to subscribe to
+Variable |  Variable to save the response into
+Delay (ms) | Native to SAMMI
+
+##### VtubeStudio - Unsubscribe from Event
+Param  | Description
+------------- | -------------
+Event | Select. The event to unsubscribe from
+Variable |  Variable to save the response into
+Delay (ms) | Native to SAMMI
+
+###### VtubeStudio Extension Triggers
+These are valid events that the extension will fire.
+Enter one of these strings into the text box of the Extension Trigger type Trigger of a Button
+- VTSEvent - TestEvent
+- VTSEvent - ModelLoadedEvent
+- VTSEvent - TrackingStatusChangedEvent
+- VTSEvent - BackgroundChangedEvent
+- VTSEvent - ModelConfigChangedEvent
+- VTSEvent - ModelMovedEvent
+- VTSEvent - ModelOutlineEvent
+
 ------------
 ### Common Problems
 ##### None of the commands are loaded
-SAMMI Bridge (previously LioranBoard 2's Transmitter) needs to be open and connected to SAMMI Client.
+SAMMI Bridge needs to be open and connected to SAMMI Client.
 
 ##### Hotkey will not trigger
 WIP
