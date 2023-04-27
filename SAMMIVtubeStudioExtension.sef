@@ -65,6 +65,10 @@ case "VtubeStudio - Send Hotkey":{
 	}
 } break
 
+case "VtubeStudio - Send Hotkey (Item)":{
+	requestHotkeyTrigger(LioranBoardJSON.Hotkey, LioranBoardJSON.InstanceID);
+} break
+
 case "VtubeStudio - Load Model":{
 	let model = window[`${VTUBESTUDIO_PLUGINNAME}_Models`].find(m => m.modelName === LioranBoardJSON.Model);
 	if (!!model) {
@@ -332,12 +336,15 @@ function SAMMIVTS_insertBaseCommands() {
 		"timeSinceModelLoaded"
 	];
 
-	//Placeholder command
 	SAMMI.extCommand("VtubeStudio - Send Hotkey",3355443, 52, {
 		Hotkey: ['Hotkey', 20, "Please make a selection", null, ["No Hotkeys! (Did you authenticate?)"]]
 	});
 
-	//Placeholder command
+	SAMMI.extCommand("VtubeStudio - Send Hotkey (Item)",3355443, 52, {
+		InstanceID: ['Item InstanceID', 14, "", null],
+		Hotkey: ['Hotkey', 14, "", null]
+	});
+
 	SAMMI.extCommand("VtubeStudio - Load Model",3355443, 52, { 
 		Model: ['Model to Load', 20, "Please make a selection", null, ["No Models! (Did you authenticate?)"]]
 	})
@@ -687,9 +694,12 @@ async function requestModelHotKeys(modelID = null) {
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestHotkeyTrigger(hotkeyID) {
+async function requestHotkeyTrigger(hotkeyID, instanceID = null) {
 	let request = await SAMMIVTS_generateBaseRequest("HotkeyTriggerRequest");
 	request.data.hotkeyID = hotkeyID;
+	if (instanceID) {
+		request.data.itemInstanceID = instanceID;
+	}
   	sendMessageToVtubeStudio(request);
 }
 

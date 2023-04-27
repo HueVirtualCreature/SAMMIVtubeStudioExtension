@@ -95,11 +95,20 @@ Dev Note | Ignore. Just a comment.
 Delay (ms) | Native to SAMMI
 
 ##### VtubeStudio - Send Hotkey
-The extension must be authenticated in order for the command to load.
 Triggers a hotkey. Note that you will get an error if you attempt to trigger a hotkey on a model that is not currently loaded. However, SAMMI will not crash.
 
 Param  | Description
 ------------- | -------------
+Hotkey | Hotkey to trigger, from a select list.
+Delay (ms) | Native to SAMMI
+
+##### VtubeStudio - Send Hotkey (Item)
+This is the same as the Send Hotkey command, but allows one to include an instance ID. This is to allow you to trigger the hotkeys of items loaded into the scene.
+Note that you will get an error if you attempt to trigger a non-existent hotkey or a item.
+
+Param  | Description
+------------- | -------------
+InstanceID | InstanceID of the item to be triggered (Note that this is not the name of the item. You can get the instanceID of an item using [VtubeStudio - Get Items List] and checking off [includeItemInstancesInScene])
 Hotkey | Hotkey to trigger, from a select list.
 Delay (ms) | Native to SAMMI
 
