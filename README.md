@@ -28,9 +28,11 @@ This extension requires the following:
 
 #### Launching
 - The **Bridge MUST be opened**  for the extension to even load commands, much less work at all. 
-- When the Bridge has connected to SAMMI, the extension will start looking for VTubeStudio.
+- When the Bridge has connected to SAMMI, the extension will insert the VtubeStudio Extension commands
+- You need to set up a button (or use one fromt he example deck) to trigger an authetication request between SAMMI and VtubeStudio
 - You will see a prompt in VTubeStudio for SAMMIVtubeStudioExtension. Click [Allow].
-- From here, you should see in the SAMMI alerts area that the extension successfully authenticated. Please keep in mind that from here on, it will try to auto-connect to VTubeStudio on reload without asking for permission.
+- From here, you should see in the SAMMI alerts area that the extension successfully authenticated.
+Note* You do not need to request a new token each time you launch, but you need to re-authenticate. I suggest doing this with a saved token.
 
 #### Commands
 This guide assumes that you are familiar with SAMMI/LioranBoard 2's Deck, Button, and Commands system(s). We will not go into detail on basic setup.
