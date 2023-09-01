@@ -1,0 +1,75 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14  # Adjust Node.js version as needed
+
+      - name: Increment Version and Copy File
+        run: |
+          # Read the current version from version.txt
+          CURRENT_VERSION=$(cat version.txt)
+
+          # Extract the version components
+          MAJOR=$(echo "$CURRENT_VERSION" | cut -d'.' -f1 | cut -c2-)
+          MINOR=$(echo "$CURRENT_VERSION" | cut -d'.' -f2)
+          PATCH=$(echo "$CURRENT_VERSION" | cut -d'.' -f3)
+          BUILD=$(echo "$CURRENT_VERSION" | cut -d'.' -f4)
+
+          # Increment the build number
+          ((BUILD++))
+
+          # Construct the new version number
+          NEW_VERSION="v$MAJOR.$MINOR.$PATCH.$BUILD"
+
+          # Update version.txt with the new version number
+          echo "$NEW_VERSION" > version.txt
+
+          # Create a subdirectory called 'builds' if it doesn't exist
+          mkdir -p builds
+
+          NEWFILE="builds/SAMMIVtubeStudioExtension.$NEW_VERSION.sef"
+          if [ -f "$NEWFILE" ]; then
+            echo "The file $NEWFILE already exists. Aborting the job."
+            exit 0  # Abort the job
+          fi
+          
+          # Create a copy of SAMMIVtubeStudioExtension.sef with the updated version in builds
+          cp SAMMIVtubeStudioExtension.sef $NEWFILE
+
+          # Replace the token in the copied file
+          sed -i "s/\$!BUILDNUMBER!\$/$NEW_VERSION/g" $NEWFILE
+        
+        working-directory: ${{ github.workspace }}
+
+      - name: Commit and Push Changes
+        if: github.event_name != 'workflow_run'  # Skip triggering when workflow_run event
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add version.txt builds/*
+          git commit -m "Build output version $NEW_VERSION"
+          git push
