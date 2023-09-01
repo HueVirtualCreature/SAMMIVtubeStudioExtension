@@ -37,7 +37,7 @@ jobs:
           echo "Parsed out version segments: $MAJOR $MINOR $PATCH $BUILD"
           
           # Increment the build number
-          ((BUILD++))
+          BUILD=$((BUILD + 1))
           echo "Increment the build number to $BUILD"
           
           # Construct the new version number
