@@ -67,7 +67,14 @@ jobs:
           echo "Replaced token"
           
         working-directory: ${{ github.workspace }}
-
+        
+      - name: Create Pull Request
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          gh pr create --base main --head ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              
       - name: Commit and Push Changes
         if: github.event_name != 'workflow_run'  # Skip triggering when workflow_run event
         run: |
