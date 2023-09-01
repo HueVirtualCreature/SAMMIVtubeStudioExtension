@@ -34,17 +34,20 @@ jobs:
           MINOR=$(echo "$CURRENT_VERSION" | cut -d'.' -f2)
           PATCH=$(echo "$CURRENT_VERSION" | cut -d'.' -f3)
           BUILD=$(echo "$CURRENT_VERSION" | cut -d'.' -f4)
-          echo "Parsed out version segments"
+          echo "Parsed out version segments: $MAJOR $MINOR $PATCH $BUILD"
           
           # Increment the build number
           ((BUILD++))
-
+          echo "Increment the build number to $BUILD"
+          
           # Construct the new version number
           NEW_VERSION="v$MAJOR.$MINOR.$PATCH.$BUILD"
-
+          echo "Formatted new version number to $NEW_VERSION"
+          
           # Update version.txt with the new version number
           echo "$NEW_VERSION" > version.txt
-
+          echo "Updated version.txt with $NEW_VERSION"
+          
           # Create a subdirectory called 'builds' if it doesn't exist
           mkdir -p builds
           echo "Checked builds folder"
