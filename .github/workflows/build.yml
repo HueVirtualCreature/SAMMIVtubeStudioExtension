@@ -27,13 +27,15 @@ jobs:
         run: |
           # Read the current version from version.txt
           CURRENT_VERSION=$(cat version.txt)
-
+          echo "$CURRENT_VERSION"
+          
           # Extract the version components
           MAJOR=$(echo "$CURRENT_VERSION" | cut -d'.' -f1 | cut -c2-)
           MINOR=$(echo "$CURRENT_VERSION" | cut -d'.' -f2)
           PATCH=$(echo "$CURRENT_VERSION" | cut -d'.' -f3)
           BUILD=$(echo "$CURRENT_VERSION" | cut -d'.' -f4)
-
+          echo "Parsed out version segments"
+          
           # Increment the build number
           ((BUILD++))
 
@@ -45,7 +47,8 @@ jobs:
 
           # Create a subdirectory called 'builds' if it doesn't exist
           mkdir -p builds
-
+          echo "Checked builds folder"
+          
           NEWFILE="builds/SAMMIVtubeStudioExtension.$NEW_VERSION.sef"
           if [ -f "$NEWFILE" ]; then
             echo "The file $NEWFILE already exists. Aborting the job."
@@ -54,10 +57,12 @@ jobs:
           
           # Create a copy of SAMMIVtubeStudioExtension.sef with the updated version in builds
           cp SAMMIVtubeStudioExtension.sef $NEWFILE
-
+          echo "File copied"
+          
           # Replace the token in the copied file
           sed -i "s/\$!BUILDNUMBER!\$/$NEW_VERSION/g" $NEWFILE
-        
+          echo "Replaced token"
+          
         working-directory: ${{ github.workspace }}
 
       - name: Commit and Push Changes
