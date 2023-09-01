@@ -23,11 +23,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14  # Adjust Node.js version as needed
-
       - name: Increment Version and Copy File
         run: |
           # Read the current version from version.txt
