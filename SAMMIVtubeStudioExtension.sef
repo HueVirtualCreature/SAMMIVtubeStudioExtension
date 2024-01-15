@@ -66,15 +66,16 @@ case "VtubeStudio - Send Hotkey":{
 } break
 
 case "VtubeStudio - Send Hotkey (By Name)":{
-	/*
-	HotkeyName
-	ModelName
-	 */
 	const requestID = uuidv4();
 	window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
-		debugger;
-		requestHotkeyTrigger(hotkey.hotkeyID);
-		//SAMMIVTS_postSAMMIMessage(`Warning - Attempted to trigger hotkey [${SAMMIJSON.HotkeyName.toLowerCase()}]. Could not identifiy hotkey.`)
+		var hotkey = (data.availableHotkeys || []).find(h => h.name.toLowerCase() == SAMMIJSON.HotkeyName.toLowerCase());
+		if (hotkey) {
+			requestHotkeyTrigger(hotkey.hotkeyID);
+		}
+		else {
+			SAMMIVTS_postSAMMIMessage(`Warning - Attempted to trigger hotkey [${SAMMIJSON.HotkeyName.toLowerCase()}]. Could not identifiy hotkey on current model`)
+		}
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = undefined;
 	};
 	requestModelHotKeys(null, requestID);
 } break
@@ -362,8 +363,7 @@ function SAMMIVTS_insertBaseCommands() {
 	});
 
 	SAMMI.extCommand("VtubeStudio - Send Hotkey (By Name)",3355443, 52, {
-		HotkeyName: ['Hotkey Name', 14, ""],
-		ModelName: ['Model Name', 14, ""]
+		HotkeyName: ['Hotkey Name', 14, ""]
 	});
 
 	SAMMI.extCommand("VtubeStudio - Send Hotkey (Item)",3355443, 52, {
