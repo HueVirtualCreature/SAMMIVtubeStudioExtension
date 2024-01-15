@@ -65,17 +65,20 @@ case "VtubeStudio - Send Hotkey":{
 	}
 } break
 
-// case "VtubeStudio - Trigger Hotkey by Name":{
-// 	const hotkey = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].find(h => getVTSHotKeyIdentifier(h.hotkeyName.toLowerCase(), h.modelName.toLowerCase()) === getVTSHotKeyIdentifier(SAMMIJSON.HotkeyName.toLowerCase(), SAMMIJSON.ModelName.toLowerCase()));
-// 	if (!!hotkey) {
-// 		requestHotkeyTrigger(hotkey.hotkeyID);
-// 		return;
-// 	}
-// 	else {
-// 		SAMMIVTS_postSAMMIMessage(`Warning - Attempted to trigger hotkey [${SAMMIJSON.HotkeyName.toLowerCase()}]. Could not identifiy hotkey.`)
-// 		return;
-// 	}
-// } break
+case "VtubeStudio - Send Hotkey (By Name)":{
+	const requestID = uuidv4();
+	window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+		var hotkey = (data.availableHotkeys || []).find(h => h.name.toLowerCase() == SAMMIJSON.HotkeyName.toLowerCase());
+		if (hotkey) {
+			requestHotkeyTrigger(hotkey.hotkeyID);
+		}
+		else {
+			SAMMIVTS_postSAMMIMessage(`Warning - Attempted to trigger hotkey [${SAMMIJSON.HotkeyName.toLowerCase()}]. Could not identifiy hotkey on current model`)
+		}
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = undefined;
+	};
+	requestModelHotKeys(null, requestID);
+} break
 
 case "VtubeStudio - Send Hotkey (Item)":{
 	requestHotkeyTrigger(SAMMIJSON.Hotkey, SAMMIJSON.InstanceID);
@@ -359,10 +362,9 @@ function SAMMIVTS_insertBaseCommands() {
 		Hotkey: ['Hotkey', 20, "Please make a selection", null, ["No Hotkeys! (Did you authenticate?)"]]
 	});
 
-	// SAMMI.extCommand("VtubeStudio - Trigger Hotkey by Name",3355443, 52, {
-	// 	HotkeyName: ['Hotkey Name', 14, ""],
-	// 	ModelName: ['Model Name', 14, ""]
-	// });
+	SAMMI.extCommand("VtubeStudio - Send Hotkey (By Name)",3355443, 52, {
+		HotkeyName: ['Hotkey Name', 14, ""]
+	});
 
 	SAMMI.extCommand("VtubeStudio - Send Hotkey (Item)",3355443, 52, {
 		InstanceID: ['Item InstanceID', 14, "", null],
@@ -540,17 +542,23 @@ function interpretResponse(responseData) {
 		case "HotkeysInCurrentModelResponse":
 			SAMMIVTS_postConsoleMessage(`Found ${responseData.data.availableHotkeys.length} hotkeys for ${responseData.data.modelName}`);
 			
-			window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].concat(responseData.data.availableHotkeys.filter(hotkey => !!hotkey.name && hotkey.name !== "").map(hotkey => { 
-				return {
-					hotkeyName: hotkey.name.toLowerCase(), 
-					hotkeyID: hotkey.hotkeyID, 
-					modelName: responseData.data.modelName.toLowerCase()
-				}; 
-			}));
-
-			SAMMI.extCommand("VtubeStudio - Send Hotkey",3355443, 52, {
-				Hotkey: ['Hotkey', 20, "Please make a selection", null, window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].map(hotkey => getVTSHotKeyIdentifier(hotkey.hotkeyName.toLowerCase(), hotkey.modelName.toLowerCase()))]
-			  });
+			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
+			}
+			else {
+				window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].concat(responseData.data.availableHotkeys.filter(hotkey => !!hotkey.name && hotkey.name !== "").map(hotkey => { 
+					return {
+						hotkeyName: hotkey.name.toLowerCase(), 
+						hotkeyID: hotkey.hotkeyID, 
+						modelName: responseData.data.modelName.toLowerCase()
+					}; 
+				}));
+	
+				SAMMI.extCommand("VtubeStudio - Send Hotkey",3355443, 52, {
+					Hotkey: ['Hotkey', 20, "Please make a selection", null, window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].map(hotkey => getVTSHotKeyIdentifier(hotkey.hotkeyName.toLowerCase(), hotkey.modelName.toLowerCase()))]
+				  });
+			}
 			break;
 		case "HotkeyTriggerResponse":
 			SAMMIVTS_postSAMMIMessage(`Triggered hotkey`);
@@ -729,9 +737,10 @@ async function requestListOfModels() {
 
 }
 
-async function requestModelHotKeys(modelID = null) {
+async function requestModelHotKeys(modelID = null, requestID = null) {
 	let request = await SAMMIVTS_generateBaseRequest("HotkeysInCurrentModelRequest");
 	request.data.modelID = modelID;
+	if (requestID) request.requestID = requestID;
 	sendMessageToVtubeStudio(request);
 }
 

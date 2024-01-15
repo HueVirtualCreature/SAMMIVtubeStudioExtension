@@ -26,6 +26,7 @@ Please feel free to submit a bug report or to DM me directly on Twitter if you n
 * [VtubeStudio - Move Model](#vtubestudio---move-model)
 * [VtubeStudio - Send Hotkey](#vtubestudio---send-hotkey)
 * [VtubeStudio - Send Hotkey (Item)](#vtubestudio---send-hotkey--item-)
+* [VtubeStudio - Send Hotkey](#vtubestudio---send-hotkey--by-name--)
 * [VtubeStudio - Get Items List](#vtubestudio---get-items-list)
 * [VtubeStudio - Load Item](#vtubestudio---load-item)
 * [VtubeStudio - Move Item](#vtubestudio---move-item)
@@ -138,12 +139,25 @@ Delay (ms) | Native to SAMMI
 
 ##### VtubeStudio - Send Hotkey (Item)
 This is the same as the Send Hotkey command, but allows one to include an instance ID. This is to allow you to trigger the hotkeys of items loaded into the scene.
-Note that you will get an error if you attempt to trigger a non-existent hotkey or a item.
+Note that you will get an error if you attempt to trigger a non-existent hotkey for a item.
 
 Param | Description
 ------------- | -------------
 InstanceID | InstanceID of the item to be triggered (Note that this is not the name of the item. You can get the instanceID of an item using [VtubeStudio - Get Items List] and checking off [includeItemInstancesInScene])
-Hotkey | Hotkey to trigger, from a select list.
+Hotkey | Hotkey to trigger.
+Delay (ms) | Native to SAMMI
+
+##### VtubeStudio - Send Hotkey (By Name)
+This is the same as the Send Hotkey command, but you specify the hotkey by text without needing to specify the model. 
+This is to allow you to trigger the hotkeys of the currently loaded model and is useful for simplifying your SAMMI commands, where you want a single command to trigger a common hotkey between many models.
+For instance, if you have seven models and they all have the hotkey "headpat", with this, you just need one command and it will work no matter which model is loaded.
+Note that you will get an error if you attempt to trigger a non-existent hotkey or a item.
+
+* Note - this command does pre-request the hotkeys of the model that is loaded, so there is a brief delay between the SAMMI button trigger and the actual firing of the hotkey, compared to the normal send hotkey command.
+
+Param | Description
+------------- | -------------
+HotkeyName | Hotkey to trigger. Case is ignored.
 Delay (ms) | Native to SAMMI
 
 ##### VtubeStudio - Get Items List
