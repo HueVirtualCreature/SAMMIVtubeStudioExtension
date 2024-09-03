@@ -40,43 +40,16 @@ const VTUBESTUDIO_PLUGINNAME = "SAMMIVtubeStudioExtension";
 const VTUBESTUDIO_AUTHORNAME = "Hue_vCreature";
 const VTUBESTUDIO_PLUGIN_ICON64 = `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`;
 
-window[`${VTUBESTUDIO_PLUGINNAME}_Space`] = {};
-window[`${VTUBESTUDIO_PLUGINNAME}_Models`] = [];
-window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = [];
-window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`] = [];
-
 VTUBESTUDIO_WebSocket_ReadyStates = { CONNECTING: 0, OPEN: 1, CLOSING: 2, CLOSED: 3 };
 
 //#region Insert Commands
 //Inserts base extension commands into SAMMI
 function SAMMIVTS_insertBaseCommands() {
-	const vtsStatsProps = [
-		"*leave blank to save entire response*",
-		"uptime",
-		"framerate",
-		"vTubeStudioVersion",
-		"allowedPlugins",
-		"connectedPlugins",
-		"startedWithSteam",
-		"windowWidth",
-		"windowHeight",
-		"windowIsFullscreen",
-	];
+	const vtsStatsProps = ["*leave blank to save entire response*","uptime","framerate","vTubeStudioVersion","allowedPlugins",
+	"connectedPlugins","startedWithSteam","windowWidth","windowHeight","windowIsFullscreen",];
 
-	const commonModelDataProps = [
-		"*leave blank to save entire response*",
-		"modelID", 
-		"modelName", 
-		"modelPosition", 
-		"positionX", 
-		"positionY", 
-		"size", 
-		"rotation", 
-		"modelLoaded", 
-		"modelLoadTime", 
-		"hasPhysicsFile", 
-		"timeSinceModelLoaded"
-	];
+	const commonModelDataProps = ["*leave blank to save entire response*","modelID", "modelName", "modelPosition", "positionX", 
+	"positionY", "size", "rotation", "modelLoaded", "modelLoadTime", "hasPhysicsFile", "timeSinceModelLoaded"];
 
 	SAMMI.extCommand("VtubeStudio - Send Hotkey",3355443, 52, {
 		Hotkey: ['Hotkey', 20, "Please make a selection", null, ["No Hotkeys! (Did you authenticate?)"]]
@@ -120,22 +93,21 @@ function SAMMIVTS_insertBaseCommands() {
 	
 	
 	SAMMI.extCommand("VtubeStudio - Pull Value",3355443, 52, {
-		Variable: ["Save Variable As", 14, ""],
 		PullValue: ["Pull Value", 20, "", null, commonModelDataProps],
-		Global: ["Global", 2, false]
+		Global: ["Global", 2, false],
+		variable: ["Save Variable As", 14, ""]
 	});
 
 	SAMMI.extCommand("VtubeStudio - Get Items List",3355443, 80, {
-		Variable: ["Save Variable As", 14, ""],
 		includeAvailableSpots: ["includeAvailableSpots", 2, false],
 		includeItemInstancesInScene: ["includeItemInstancesInScene", 2, false],
 		includeAvailableItemFiles: ["includeAvailableItemFiles", 2, false],
 		onlyItemsWithFileName: ["onlyItemsWithFileName", 14, ""],
-		onlyItemsWithInstanceID: ["onlyItemsWithInstanceID", 14, ""]
+		onlyItemsWithInstanceID: ["onlyItemsWithInstanceID", 14, ""],
+		variable: ["Save Variable As", 14, ""]
 	});
 
 	SAMMI.extCommand("VtubeStudio - Load Item",3355443, 80, {
-		variable: ["Save Variable As", 14, ""],
 		fileName: ["fileName", 14, ""],
 		positionX: ["positionX", 14, "0"],
 		positionY: ["positionY", 14, "0.5"],
@@ -148,20 +120,20 @@ function SAMMIVTS_insertBaseCommands() {
 		censored: ["censored", 2, false],
 		flipped: ["flipped", 2, false],
 		locked: ["locked", 2, false],
-		unloadWhenPluginDisconnects: ["unloadWhenPluginDisconnects", 2, true]
+		unloadWhenPluginDisconnects: ["unloadWhenPluginDisconnects", 2, true],
+		variable: ["Save Variable As", 14, ""]
 	});
 
 	SAMMI.extCommand("VtubeStudio - Remove Item",3355443, 80, {
-		variable: ["Save Variable As", 14, ""],
-		unloadAllInScene: ["unloadAll", 2, false],
-		unloadAllLoadedByThisPlugin: ["unloadAllItemsFromSAMMI", 2, false],
-		allowUnloadingItemsLoadedByUserOrOtherPlugins: ["allowUnloadingItemsFromOutsideSAMMI", 2, true],
-		instanceIDs: ["instanceIDsArrayName", 14, ""],
-		fileNames: ["fileNamesArrayName", 14, ""]
+		unloadAllInScene: ["Remove All in Scene", 2, false],
+		unloadAllLoadedByThisPlugin: ["Remove All (by SAMMI)", 2, false],
+		allowUnloadingItemsLoadedByUserOrOtherPlugins: ["Allow Removal of Items (by other than SAMMI)", 2, true],
+		instanceIDs: ["instanceIDs ArrayName", 14, ""],
+		fileNames: ["fileNames ArrayName", 14, ""],
+		variable: ["Save Variable As", 14, ""]
 	});
 
 	SAMMI.extCommand("VtubeStudio - Control Animation",3355443, 80, {
-		variable: ["Save Variable As (Not used)", 14, ""],
 		itemInstanceID: ["itemInstanceID", 14, ""],
 		framerate: ["framerate", 14, "12"],
 		frame: ["frame", 14, "0"],
@@ -170,26 +142,28 @@ function SAMMIVTS_insertBaseCommands() {
 		setAutoStopFrames: ["setAutoStopFrames", 2, false],
 		autoStopFrames: ["autoStopFrames", 14, ""],
 		setAnimationPlayState: ["setAnimationPlayState", 2, true],
-		animationPlayState: ["animationPlayState", 2, true]
+		animationPlayState: ["animationPlayState", 2, true],
+		variable: ["Save Variable As (Not used)", 14, ""]
 	});
 
 	//TODO Move Items UI needs to be improved to be more user friendly
 	SAMMI.extCommand("VtubeStudio - Move Item",3355443, 80, {
-		variable: ["Save Variable As (Not used)", 14, ""],
 		itemsToMove: ["itemsToMove Variable Name", 14, ""],
-		dev_note: ["Request model", 0, `{\n"itemInstanceID": "ItemInstanceId",\n"timeInSeconds": 1,\n"fadeMode": "easeOut",\n"positionX": 0.2,\n"positionY": -0.8,\n"size": 0.6,\n"rotation": 180,\n"order": -1000,\n"setFlip": true,\n"flip": false,\n"userCanStop": true\n}`]
+		//TODO This sucks ass
+		dev_note: ["Request model", 0, `{\n"itemInstanceID": "ItemInstanceId",\n"timeInSeconds": 1,\n"fadeMode": "easeOut",\n"positionX": 0.2,\n"positionY": -0.8,\n"size": 0.6,\n"rotation": 180,\n"order": -1000,\n"setFlip": true,\n"flip": false,\n"userCanStop": true\n}`],
+		variable: ["Save Variable As (Not used)", 14, ""]
 	});
 
 	SAMMI.extCommand("VtubeStudio - PostProcessing List Get (BETA)",3355443, 80, {
-		fillPostProcessingPresetsArray: ["fillPostProcessingPresetsArray", 2, false],
-		fillPostProcessingEffectsArray: ["fillPostProcessingEffectsArray", 2, false],
-		effectIDFilter: ["effectIDFilter (Input array variable or leave blank)", 15, ""],
-		variable: ["Save Variable As", 14, ""]
+		fillPostProcessingPresetsArray: ["Include Presets?", 2, false, 0.5],
+		fillPostProcessingEffectsArray: ["Include VFX?", 2, false, 0.5],
+		effectIDFilter: ["effectIDFilter (array name or blank)", 14, "", 1.5],
+		variable: ["Save Variable As", 14, "", 1.5]
 	});
 
 	SAMMI.extCommand("VtubeStudio - PostProcessing Simple On/Off (BETA)",3355443, 30, {
-		postProcessingOn: ["On/Off", 14, ""],
-		variable: ["Save Variable As", 14, ""]
+		postProcessingOn: ["On/Off", 14, "", 0.5],
+		variable: ["Save Variable As", 14, "", 1.5]
 	});
 
 	SAMMI.extCommand("VtubeStudio - PostProcessing Set (BETA)",3355443, 30, {
@@ -225,15 +199,8 @@ function SAMMIVTS_insertBaseCommands() {
 		pullValue: ["Pull Value", 20, "", null, vtsStatsProps],
 	});
 
-	const events = [
-		"TestEvent",
-		"ModelLoadedEvent",
-		"TrackingStatusChangedEvent",
-		"BackgroundChangedEvent",
-		"ModelConfigChangedEvent",
-		"ModelMovedEvent",
-		"ModelOutlineEvent"
-	];
+	const events = [ "TestEvent","ModelLoadedEvent","TrackingStatusChangedEvent","BackgroundChangedEvent","ModelConfigChangedEvent",
+	"ModelMovedEvent","ModelOutlineEvent"];
 
 	SAMMI.extCommand("VtubeStudio - Listen to Event",3355443, 80, {
 		Event: ["Event", 20, "", null, events],
@@ -268,21 +235,21 @@ function SAMMIVTS_insertCommandHooks() {
 	sammiclient.on('VtubeStudio - Request Token', async (json) => {
 		const data = json.Data;
 		//Request a token from the VTS server and save the token it replies with to a Global variable
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			SAMMI.setVariable("SAMMIVtubeStudioExtension_AuthToken", data.authenticationToken || undefined); //Hardcoded to save to Global
 		};
-		createVTSWebSocketClient(() => {requestVtubeStudioAuthenticationToken({requestId: requestId});});
+		createVTSWebSocketClient(() => {requestVtubeStudioAuthenticationToken({requestID: requestID});});
 	});
 	
 	sammiclient.on('VtubeStudio - Authenticate', async (json) => {
 		const data = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (data.authenticated == false) SAMMIVTS_postConsoleMessage("The VTS server failed to authenticate the extension");
 			SAMMI.setVariable("SAMMIVtubeStudioExtension_IsAuthenticated", data.authenticated || false); //Hardcoded to save to Global
 		};
-		createVTSWebSocketClient(() => { requestAuthentication({requestId: requestId}); });
+		createVTSWebSocketClient(() => { requestAuthentication({requestID: requestID}); });
 	});
 	
 	sammiclient.on('VtubeStudio - Send Hotkey', async (json) => {
@@ -300,8 +267,8 @@ function SAMMIVTS_insertCommandHooks() {
 	
 	sammiclient.on('VtubeStudio - Send Hotkey (By Name)', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			var hotkey = (data.availableHotkeys || []).find(h => h.name.toLowerCase() == SAMMIJSON.HotkeyName.toLowerCase());
 			if (hotkey) {
 				requestHotkeyTrigger(hotkey.hotkeyID);
@@ -309,9 +276,9 @@ function SAMMIVTS_insertCommandHooks() {
 			else {
 				SAMMIVTS_postSAMMIMessage(`Warning - Attempted to trigger hotkey [${SAMMIJSON.HotkeyName.toLowerCase()}]. Could not identifiy hotkey on current model`)
 			}
-			window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = undefined;
+			window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = undefined;
 		};
-		requestModelHotKeys(null, requestId);
+		requestModelHotKeys(null, requestID);
 	});
 	
 	sammiclient.on('VtubeStudio - Send Hotkey (Item)', async (json) => {
@@ -333,39 +300,39 @@ function SAMMIVTS_insertCommandHooks() {
 	
 	sammiclient.on('VtubeStudio - Pull Value', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (modelData) => {
-			if (!!SAMMIJSON.Variable) {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (modelData) => {
+			if (!!SAMMIJSON.variable) {
 				//I think the model position data is inside "modelPosition" proptery, so let's extract it....
 				modelData = { ...modelData, ...modelData.modelPosition };
 				let buttonID = 'global';
 				if (SAMMIJSON.Global !== true) {buttonID = SAMMIJSON.FromButton;}
-				if (!SAMMIJSON.PullValue || SAMMIJSON.PullValue == "") {SAMMI.setVariable(SAMMIJSON.Variable, modelData, buttonID); return;}
-				SAMMI.setVariable(SAMMIJSON.Variable, modelData[SAMMIJSON.PullValue] || undefined, buttonID);
+				if (!SAMMIJSON.PullValue || SAMMIJSON.PullValue == "") {SAMMI.setVariable(SAMMIJSON.variable, modelData, buttonID); return;}
+				SAMMI.setVariable(SAMMIJSON.variable, modelData[SAMMIJSON.PullValue] || undefined, buttonID);
 			}
 		};
-		requestCurrentModelData({requestId: requestId});
+		requestCurrentModelData({requestID: requestID});
 	});
 	
 	sammiclient.on('VtubeStudio - Get Items List', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
-			if (!!SAMMIJSON.Variable) {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
-				SAMMI.setVariable(SAMMIJSON.Variable, data, buttonID);
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 				return;
 			}
 		};
-		requestItemList({requestId: requestId}, SAMMIJSON.includeAvailableSpots, 
+		requestItemList({requestID: requestID}, SAMMIJSON.includeAvailableSpots, 
 			SAMMIJSON.includeItemInstancesInScene, SAMMIJSON.includeAvailableItemFiles, 
 			SAMMIJSON.onlyItemsWithFileName, SAMMIJSON.onlyItemsWithInstanceID);
 	});
 	
 	sammiclient.on('VtubeStudio - Load Item', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
@@ -373,61 +340,32 @@ function SAMMIVTS_insertCommandHooks() {
 			}
 		};
 	
-		const {
-			fileName,
-			positionX,
-			positionY,
-			size,
-			rotation,
-			fadeTime,
-			order,
-			failIfOrderTaken,
-			smoothing,
-			censored,
-			flipped,
-			locked,
-			unloadWhenPluginDisconnects
-		} = SAMMIJSON;
-		requestLoadItem({
-			requestId,
-			fileName,
-			positionX,
-			positionY,
-			size,
-			rotation,
-			fadeTime,
-			order,
-			failIfOrderTaken,
-			smoothing,
-			censored,
-			flipped,
-			locked,
-			unloadWhenPluginDisconnects
+		const {fileName, positionX,positionY,size,rotation,fadeTime,order,failIfOrderTaken,
+			smoothing,censored,flipped,locked,unloadWhenPluginDisconnects} = SAMMIJSON;
+
+		requestLoadItem({requestID,fileName,positionX,positionY,size,rotation,fadeTime,
+			order,failIfOrderTaken,smoothing,censored,flipped,locked,unloadWhenPluginDisconnects
 		});
 	});
 	
 	sammiclient.on('VtubeStudio - Remove Item', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 				return;
 			}
 		};
-		const {
-			unloadAllInScene,
-			unloadAllLoadedByThisPlugin,
-			allowUnloadingItemsLoadedByUserOrOtherPlugins,
-			instanceIDs: instanceIDsArrayName,
-			fileNames: fileNamesArrayName
-		} = SAMMIJSON;
+
+		const {unloadAllInScene,unloadAllLoadedByThisPlugin,allowUnloadingItemsLoadedByUserOrOtherPlugins,
+			instanceIDs: instanceIDsArrayName,fileNames: fileNamesArrayName} = SAMMIJSON;
 	
 		SAMMI.getVariable(instanceIDsArrayName, SAMMIJSON.FromButton).then(instanceIDs => {
 			SAMMI.getVariable(fileNamesArrayName, SAMMIJSON.FromButton).then(fileNames => {
 				requestRemoveItem({
-					requestId,
+					requestID,
 					unloadAllInScene,
 					unloadAllLoadedByThisPlugin,
 					allowUnloadingItemsLoadedByUserOrOtherPlugins,
@@ -440,55 +378,25 @@ function SAMMIVTS_insertCommandHooks() {
 	
 	sammiclient.on('VtubeStudio - Control Animation', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
+		const requestID = uuidv4();
 	
-		const {
-			itemInstanceID,
-			framerate,
-			frame,
-			brightness,
-			opacity,
-			setAutoStopFrames,
-			autoStopFrames,
-			setAnimationPlayState,
-			animationPlayState
-		} = SAMMIJSON;
+		const {itemInstanceID,framerate,frame,brightness,opacity,setAutoStopFrames,autoStopFrames,setAnimationPlayState,animationPlayState} = SAMMIJSON;
 	
 		if (autoStopFrames && autoStopFrames !== "") {
 			SAMMI.getVariable(autoStopFrames, SAMMIJSON.FromButton).then(autoStopFramesVariable => {
-				requestItemAnimationControl({
-					requestId,
-					itemInstanceID,
-					framerate,
-					frame,
-					brightness,
-					opacity,
-					setAutoStopFrames,
-					autoStopFrames: autoStopFramesVariable.value,
-					setAnimationPlayState,
-					animationPlayState
-				});
+				requestItemAnimationControl({requestID,itemInstanceID,framerate,frame,brightness,opacity,
+					setAutoStopFrames,autoStopFrames: autoStopFramesVariable.value,setAnimationPlayState,animationPlayState});
 			});
 			return;
 		}
 		
-		requestItemAnimationControl({
-			requestId,
-			itemInstanceID,
-			framerate,
-			frame,
-			brightness,
-			opacity,
-			setAutoStopFrames,
-			autoStopFrames: null,
-			setAnimationPlayState,
-			animationPlayState
-		});
+		requestItemAnimationControl({requestID,itemInstanceID,framerate,frame,brightness,opacity,setAutoStopFrames,
+			autoStopFrames: null,setAnimationPlayState,animationPlayState});
 	});
 	
 	sammiclient.on('VtubeStudio - Move Item', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
+		const requestID = uuidv4();
 	
 		const {
 			itemsToMove: itemsToMoveVariableName
@@ -496,10 +404,7 @@ function SAMMIVTS_insertCommandHooks() {
 	
 		if (itemsToMoveVariableName && itemsToMoveVariableName !== "") {
 			SAMMI.getVariable(itemsToMoveVariableName, SAMMIJSON.FromButton).then(itemsToMoveVariable => {
-				requestItemMove({
-					requestId,
-					itemsToMove: itemsToMoveVariable.value
-				});
+				requestItemMove({requestID, itemsToMove: itemsToMoveVariable.value});
 			});
 			return;
 		}
@@ -507,92 +412,89 @@ function SAMMIVTS_insertCommandHooks() {
 	
 	sammiclient.on('VtubeStudio - Get VTS Info', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
 				if (!SAMMIJSON.pullValue || SAMMIJSON.pullValue == "") {SAMMI.setVariable(SAMMIJSON.variable, data, buttonID); return;}
 				SAMMI.setVariable(SAMMIJSON.variable, data[SAMMIJSON.pullValue] || undefined, buttonID);
 			}
 		};
-		requestVTSStats({requestId: requestId});
+		requestVTSStats({requestID: requestID});
 	});
 	
 	sammiclient.on('VtubeStudio - Get Expression State', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 			}
 		};
-		requestExpressionStateRequest({requestId: requestId, expressionFile: SAMMIJSON.ExpressionFile, details: SAMMIJSON.Details});
+		requestExpressionStateRequest({requestID: requestID, expressionFile: SAMMIJSON.ExpressionFile, details: SAMMIJSON.Details});
 	});
 	
 	sammiclient.on('VtubeStudio - Toggle Expression', async (json) => {
 		const SAMMIJSON = json.Data;
-		requestExpressionActivationRequest({requestId: uuidv4(), expressionFile: SAMMIJSON.ExpressionFile, active: SAMMIJSON.Active});
+		requestExpressionActivationRequest({requestID: uuidv4(), expressionFile: SAMMIJSON.ExpressionFile, active: SAMMIJSON.Active});
 	});
 	
 	sammiclient.on('VtubeStudio - Listen to Event', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
 				if (!SAMMIJSON.pullValue || SAMMIJSON.pullValue == "") {SAMMI.setVariable(SAMMIJSON.variable, data, buttonID); return;}
 				SAMMI.setVariable(SAMMIJSON.variable, data[SAMMIJSON.pullValue] || undefined, buttonID);
 			}
 		};
-		requestVTSEventSubscription({requestId: requestId, event: SAMMIJSON.Event});
+		requestVTSEventSubscription({requestID: requestID, event: SAMMIJSON.Event});
 	});
 	
 	sammiclient.on('VtubeStudio - Unsubscribe from Event', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
 				if (!SAMMIJSON.pullValue || SAMMIJSON.pullValue == "") {SAMMI.setVariable(SAMMIJSON.variable, data, buttonID); return;}
 				SAMMI.setVariable(SAMMIJSON.variable, data[SAMMIJSON.pullValue] || undefined, buttonID);
 			}
 		};
-		requestVTSEventUnSubscribe({requestId: requestId, event: SAMMIJSON.Event});
+		requestVTSEventUnSubscribe({requestID: requestID, event: SAMMIJSON.Event});
 	});
 	
 	sammiclient.on('VtubeStudio - PostProcessing List Get (BETA)', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
-				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+				SAMMI.setVariable(SAMMIJSON.variable, data, SAMMIJSON.FromButton);
 			}
 		};
-		const {fillPostProcessingPresetsArray,fillPostProcessingEffectsArray, effectIDFilter} = SAMMIJSON;
+		const {fillPostProcessingPresetsArray,fillPostProcessingEffectsArray, effectIDFilter: effectIDFilterArrayName} = SAMMIJSON;
 		var data = {
 			fillPostProcessingPresetsArray,
 			fillPostProcessingEffectsArray
 		}
-		if (effectIDFilter && effectIDFilter !== "") {
-			SAMMI.getVariable(effectIDFilter, SAMMIJSON.FromButton).then(effectIDFilterVariable => {
-				requestPostProcessingListRequest({
-					requestId,
-					...data,
-					effectIDFilter: effectIDFilterVariable.value
-				});
+
+		if (effectIDFilterArrayName && effectIDFilterArrayName !== "") {
+			SAMMI.getVariable(effectIDFilterArrayName, SAMMIJSON.FromButton).then(response => {
+				data.effectIDFilter = response.value;
+				requestPostProcessingListRequest({requestID: requestID, data: data});
 			});
 			return;
 		}
-		
-		requestPostProcessingListRequest({requestId: requestId, data: data});
+		requestPostProcessingListRequest({requestID: requestID, data: data});
 	});
 	
 	sammiclient.on('VtubeStudio - PostProcessing Simple On/Off (BETA)', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
@@ -603,13 +505,13 @@ function SAMMIVTS_insertCommandHooks() {
 		var data = {
 			postProcessingOn
 		}
-		requestPostProcessingUpdateRequest({requestId: requestId, data: data});
+		requestPostProcessingUpdateRequest({requestID: requestID, data: data});
 	});
 
 	sammiclient.on('VtubeStudio - PostProcessing Set (BETA)', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
@@ -630,7 +532,7 @@ function SAMMIVTS_insertCommandHooks() {
 		if (postProcessingValues && postProcessingValues !== "") {
 			SAMMI.getVariable(postProcessingValues, SAMMIJSON.FromButton).then(postProcessingValuesVariable => {
 				requestPostProcessingUpdateRequest({
-					requestId,
+					requestID,
 					...data,
 					postProcessingValues: postProcessingValuesVariable.value
 				});
@@ -638,13 +540,13 @@ function SAMMIVTS_insertCommandHooks() {
 			return;
 		}
 		
-		requestPostProcessingUpdateRequest({requestId: requestId, data: data});
+		requestPostProcessingUpdateRequest({requestID: requestID, data: data});
 	});
 
 	sammiclient.on('VtubeStudio - PostProcessing Set by Preset(BETA)', async (json) => {
 		const SAMMIJSON = json.Data;
-		const requestId = uuidv4();
-		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestId] = (data) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
 			if (!!SAMMIJSON.variable) {
 				let buttonID = SAMMIJSON.FromButton;
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
@@ -666,7 +568,7 @@ function SAMMIVTS_insertCommandHooks() {
 		if (postProcessingValues && postProcessingValues !== "") {
 			SAMMI.getVariable(postProcessingValues, SAMMIJSON.FromButton).then(postProcessingValuesVariable => {
 				requestPostProcessingUpdateRequest({
-					requestId,
+					requestID,
 					...data,
 					postProcessingValues: postProcessingValuesVariable.value
 				});
@@ -674,12 +576,12 @@ function SAMMIVTS_insertCommandHooks() {
 			return;
 		}
 		
-		requestPostProcessingUpdateRequest({requestId: requestId, data: data});
+		requestPostProcessingUpdateRequest({requestID: requestID, data: data});
 	});
 }
 //#endregion
 
-//#region Interpret Response (Messages from the API)
+//#region Interpret API Response
 //This is the master logic for recieving responses from the VTS server
 function interpretResponse(responseData) {
 	if (!responseData) { throw 'interpretResponse: responseData cannot be null!'; }
@@ -687,18 +589,18 @@ function interpretResponse(responseData) {
 	switch(responseData.messageType) {
 		case "AuthenticationTokenResponse":
 			window.VTUBESTUDIO_AUTHTOKEN = responseData.data.authenticationToken;
-			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId]) {
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId](responseData.data);
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId] = undefined;
+			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
 			}
 			break;
 		case "AuthenticationResponse":
 			SAMMIVTS_postSAMMIMessage(`Response from server: ${responseData.data.reason}`);
 
 			window.VTUBESTUDIO_AUTHTOKEN = responseData.data.authenticationToken;
-			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId]) {
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId](responseData.data);
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId] = undefined;
+			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
 			}
 
 			if (responseData.data.authenticated === true) {
@@ -722,9 +624,9 @@ function interpretResponse(responseData) {
 		case "HotkeysInCurrentModelResponse":
 			SAMMIVTS_postConsoleMessage(`Found ${responseData.data.availableHotkeys.length} hotkeys for ${responseData.data.modelName}`);
 			
-			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId]) {
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId](responseData.data);
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId] = undefined;
+			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
 			}
 			else {
 				window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`].concat(responseData.data.availableHotkeys.filter(hotkey => !!hotkey.name && hotkey.name !== "").map(hotkey => { 
@@ -747,24 +649,26 @@ function interpretResponse(responseData) {
 			SAMMIVTS_postSAMMIMessage(`Model loaded`);
 			break;
 		case "MoveModelResponse":
-			SAMMIVTS_postSAMMIMessage("Model moved");
 			break;
-		
 		case "ItemLoadResponse":
 			if (responseData.data && responseData.data.instanceID) {
 				//SAMMIVTS_postConsoleMessage("ItemListResponse SUCCESS: " + responseData.data.instanceID)
-				if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId]) {
-						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId](responseData.data.instanceID);
-						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId] = undefined;
+				if (!responseData.requestID) { console.error("The supplied API response did not include a requestID", responseData); }
+				if (!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+					console.error("The supplied API repsonse included a request ID that did not match any callbacks in the _OnMessageRecievedFunctions collection.\n This response will not produce any effects in SAMMI.");
+				}
+				if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data.instanceID);
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
 				}
 			}
 			break;
 		case "ItemUnloadResponse":
 			if (responseData.data && responseData.data.unloadedItems) {
 				//SAMMIVTS_postConsoleMessage("ItemUnloadResponse SUCCESS: " + responseData.data.unloadedItems)
-				if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId]) {
-						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId](responseData.data.instanceID);
-						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId] = undefined;
+				if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data.instanceID);
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
 				}
 			}
 			break;
@@ -784,9 +688,9 @@ function interpretResponse(responseData) {
 		case "ExpressionStateResponse":
 		case "PostProcessingListResponse":
 		case "PostProcessingUpdateResponse":
-			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId]) {
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId](responseData.data);
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId] = undefined;
+			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
 			}
 			break;
 		case "ExpressionActivationResponse":
@@ -796,9 +700,9 @@ function interpretResponse(responseData) {
 			break;
 		//#region Event Subscriptions
 		case "EventSubscriptionResponse":
-			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId]) {
-						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId](responseData.data);
-						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestId] = undefined;
+			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
+						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
 				}
 			break;
 		case "TestEvent":
@@ -886,17 +790,17 @@ function sendMessageToVtubeStudio(request) {
 	}
 };
 
-async function requestVtubeStudioAuthenticationToken({requestId}) {
+async function requestVtubeStudioAuthenticationToken({requestID}) {
 	SAMMIVTS_postSAMMIMessage('Plugin is asking for authentication in VTube Studio', 0);
 	const request = await SAMMIVTS_generateBaseRequest("AuthenticationTokenRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data.pluginIcon = VTUBESTUDIO_PLUGIN_ICON64;
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestAuthentication({requestId}) {
+async function requestAuthentication({requestID}) {
 	let request = await SAMMIVTS_generateBaseRequest("AuthenticationRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	sendMessageToVtubeStudio(request);
 }
 
@@ -906,10 +810,10 @@ async function requestListOfModels() {
 
 }
 
-async function requestModelHotKeys(modelID = null, requestId = null) {
+async function requestModelHotKeys(modelID = null, requestID = null) {
 	let request = await SAMMIVTS_generateBaseRequest("HotkeysInCurrentModelRequest");
 	request.data.modelID = modelID;
-	if (requestId) request.requestId = requestId;
+	if (requestID) request.requestID = requestID;
 	sendMessageToVtubeStudio(request);
 }
 
@@ -938,7 +842,7 @@ async function requestItemList(obj, includeAvailableSpots = false, includeItemIn
 
 async function requestLoadItem(
 	{
-		requestId,
+		requestID,
 		fileName,
 		positionX,
 		positionY,
@@ -969,7 +873,7 @@ async function requestLoadItem(
 
 	if (!fileName) return;
 	let request = await SAMMIVTS_generateBaseRequest("ItemLoadRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data = {
 		...request.data,
 		fileName,
@@ -990,7 +894,7 @@ async function requestLoadItem(
 }
 
 async function requestRemoveItem({
-	requestId,
+	requestID,
 	unloadAllInScene,
 	unloadAllLoadedByThisPlugin,
 	allowUnloadingItemsLoadedByUserOrOtherPlugins,
@@ -1004,7 +908,7 @@ async function requestRemoveItem({
 	fileNames: []
 }) {
 	let request = await SAMMIVTS_generateBaseRequest("ItemUnloadRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data = {
 		...request.data,
 		unloadAllInScene,
@@ -1017,7 +921,7 @@ async function requestRemoveItem({
 }
 
 async function requestItemAnimationControl({
-	requestId,
+	requestID,
 	itemInstanceID,
 	framerate,
 	frame,
@@ -1043,7 +947,7 @@ async function requestItemAnimationControl({
   }
   ) {
 	let request = await SAMMIVTS_generateBaseRequest("ItemAnimationControlRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data = {
 		...request.data,
 		itemInstanceID,
@@ -1059,11 +963,11 @@ async function requestItemAnimationControl({
   	sendMessageToVtubeStudio(request);
 }
 
-async function requestItemMove({requestId, itemsToMove}) {
+async function requestItemMove({requestID, itemsToMove}) {
 	if (itemsToMove.length < 1) return;
 	if (typeof itemsToMove[0] == "string") itemsToMove = itemsToMove.map(e => { return JSON.parse(e) });
 	let request = await SAMMIVTS_generateBaseRequest("ItemMoveRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data = {
 		...request.data,
 		itemsToMove
@@ -1098,42 +1002,42 @@ async function requestCurrentModelData(obj) {
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestVTSStats({requestId}) {
+async function requestVTSStats({requestID}) {
 	let request = await SAMMIVTS_generateBaseRequest("StatisticsRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
   	sendMessageToVtubeStudio(request);
 }
 
 //https://github.com/DenchiSoft/VTubeStudio#requesting-current-expression-state-list
-async function requestExpressionStateRequest({requestId, expressionFile, details}) {
+async function requestExpressionStateRequest({requestID, expressionFile, details}) {
 	let request = await SAMMIVTS_generateBaseRequest("ExpressionStateRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data.details = details;
 	request.data.expressionFile = expressionFile;
 	sendMessageToVtubeStudio(request);
 }
 
 //https://github.com/DenchiSoft/VTubeStudio#requesting-activation-or-deactivation-of-expressions
-async function requestExpressionActivationRequest({requestId, expressionFile, active}) {
+async function requestExpressionActivationRequest({requestID, expressionFile, active}) {
 	let request = await SAMMIVTS_generateBaseRequest("ExpressionActivationRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data.active = active;
 	request.data.expressionFile = expressionFile;
   	sendMessageToVtubeStudio(request);
 }
 
 //https://github.com/DenchiSoft/VTubeStudio?tab=readme-ov-file#set-post-processing-effects
-async function requestPostProcessingUpdateRequest({requestId, data}) {
+async function requestPostProcessingUpdateRequest({requestID, data}) {
 	let request = await SAMMIVTS_generateBaseRequest("PostProcessingUpdateRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data = data;
   	sendMessageToVtubeStudio(request);
 }
 
 //https://github.com/DenchiSoft/VTubeStudio?tab=readme-ov-file#get-list-of-post-processing-effects-and-state
-async function requestPostProcessingListRequest({requestId, data}) {
+async function requestPostProcessingListRequest({requestID, data}) {
 	let request = await SAMMIVTS_generateBaseRequest("PostProcessingListRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data = data;
   	sendMessageToVtubeStudio(request);
 }
@@ -1148,7 +1052,7 @@ function requestRefresh() {
 async function SAMMIVTS_getVTSAuthToken() {
 	let token = null;
 	await SAMMI.getVariable("SAMMIVtubeStudioExtension_AuthToken", "global").then(tokenObj => {
-		token = tokenObj.Value;
+		token = tokenObj.Value; //I am not sure where this is Value, but others produce value
 	});
 	return token;
 }
@@ -1159,7 +1063,7 @@ async function SAMMIVTS_generateBaseRequest (messageType) {
 	return {
 		"apiName": "VTubeStudioPublicAPI",
 		"apiVersion": "1.0",
-		"requestId": uuidv4(),
+		"requestID": uuidv4(),
 		"messageType": messageType,
 		"data": {
 			"pluginName": VTUBESTUDIO_PLUGINNAME,
@@ -1170,9 +1074,9 @@ async function SAMMIVTS_generateBaseRequest (messageType) {
 	};
 }
 
-async function requestVTSEventSubscription({requestId, event}) {
+async function requestVTSEventSubscription({requestID, event}) {
 	let request = await SAMMIVTS_generateBaseRequest("EventSubscriptionRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data = {
 		"eventName": event,
 		"subscribe": true,
@@ -1183,9 +1087,9 @@ async function requestVTSEventSubscription({requestId, event}) {
   	sendMessageToVtubeStudio(request);
 }
 
-async function requestVTSEventUnSubscribe({requestId, event}) {
+async function requestVTSEventUnSubscribe({requestID, event}) {
 	let request = await SAMMIVTS_generateBaseRequest("EventSubscriptionRequest");
-	request.requestId = requestId;
+	request.requestID = requestID;
 	request.data = {
 		"eventName": event,
 		"subscribe": false,
@@ -1224,6 +1128,10 @@ function getVTSHotKeyIdentifier(hotkeyName, modelName) {
 function SAMMIVTS_initialize() {
 	if (sammiclient) {
 		SAMMIVTS_postSAMMIMessage("Started $!BUILDNUMBER!$");
+		if (!window[`${VTUBESTUDIO_PLUGINNAME}_Space`]) window[`${VTUBESTUDIO_PLUGINNAME}_Space`] = {};
+		if (!window[`${VTUBESTUDIO_PLUGINNAME}_Models`]) window[`${VTUBESTUDIO_PLUGINNAME}_Models`] = [];
+		if (!window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`]) window[`${VTUBESTUDIO_PLUGINNAME}_HotKeys`] = [];
+		if (!window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`]) window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`] = [];
 		SAMMIVTS_insertBaseCommands();
 		SAMMIVTS_insertCommandHooks();
 		return;

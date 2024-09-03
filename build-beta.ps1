@@ -26,8 +26,5 @@ Copy-Item -Path SAMMIVtubeStudioExtension.sef -Destination $newFile -Force
 # Replace the token in the copied file
 (Get-Content -Path $newFile) | ForEach-Object {$_ -replace '\$!BUILDNUMBER!\$', $newVersion} | Set-Content -Path $newFile
 
-# Read the json from the example_deck.json file
-$exampleDeckJson = Get-Content -Path example_deck.json
-
-# Replace the example deck token in the copied file
-(Get-Content -Path $newFile) | ForEach-Object {$_ -replace '{"exampleDeckData":"\$!ExampleDeckData!\$"}', $exampleDeckJson} | Set-Content -Path $newFile
+# Do not replace the exmaple deck
+(Get-Content -Path $newFile) | ForEach-Object {$_ -replace '{"exampleDeckData":"\$!ExampleDeckData!\$"}', ''} | Set-Content -Path $newFile
