@@ -50,7 +50,7 @@ Please feel free to submit a bug report or to DM me directly on Twitter if you n
 ## Usage
 #### Requirements
 This extension requires the following:
-- [VTube Studio 1.21.5](https://store.steampowered.com/app/1325860/VTube_Studio/  "VTube Studio 1.21.5")
+- [>=VTube Studio 1.21.5](https://store.steampowered.com/app/1325860/VTube_Studio/  "VTube Studio 1.21.5")
 - SAMMI (any version) (We no longer support Lioranboard 2, please refer to version [v1.1.0.0](https://github.com/HueVirtualCreature/SAMMIVtubeStudioExtension/releases/tag/v1.1.0.0  "v1.1.0.0"))
 
   
