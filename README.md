@@ -34,6 +34,14 @@ Please feel free to submit a bug report or to DM me directly on Twitter if you n
 * [VtubeStudio - Remove Item](#vtubestudio---remove-item)
 * [VtubeStudio - Get Expression State](#vtubestudio---get-expression-state)
 * [VtubeStudio - Toggle Expression](#vtubestudio---toggle-expression)
+
+* [VtubeStudio - PostProcessing - Helper - Add Effect to Array (BETA)](#vtubestudio---toggle-expression)
+* [VtubeStudio - PostProcessing List Get (BETA)](#vtubestudio---toggle-expression)
+* [VtubeStudio - PostProcessing - Helper - Create Config Object (BETA)](#vtubestudio---toggle-expression)
+* [VtubeStudio - PostProcessing Simple On/Off (BETA)](#vtubestudio---toggle-expression)
+* [VtubeStudio - PostProcessing Set (BETA)](#vtubestudio---toggle-expression)
+* [VtubeStudio - PostProcessing Set by Preset(BETA)](#vtubestudio---toggle-expression)
+
 * [VtubeStudio - Listen to Event](#vtubestudio---listen-to-event)
 * [VtubeStudio - Unsubscribe from Event](#vtubestudio---unsubscribe-from-event)
 + [VtubeStudio Extension Triggers](#vtubestudio-extension-triggers)
@@ -53,8 +61,6 @@ This extension requires the following:
 3. In SAMMI's main UI, Click on [Bridge] and Select [Install an extension]
 4. Navigate to the downloaded sef file and select it
 
-  
-
 #### Launching
 - The **Bridge MUST be opened** for the extension to even load commands, much less work at all.
 - When the Bridge has connected to SAMMI, the extension will insert the VtubeStudio Extension commands
@@ -62,8 +68,6 @@ This extension requires the following:
 - You will see a prompt in VTubeStudio for SAMMIVtubeStudioExtension. Click [Allow].
 - From here, you should see in the SAMMI alerts area that the extension successfully authenticated.
 Note* You do not need to request a new token each time you launch, but you need to re-authenticate. I suggest doing this with a saved token.
-
-  
 
 #### Commands
 This guide assumes that you are familiar with SAMMI/LioranBoard 2's Deck, Button, and Commands system(s). We will not go into detail on basic setup.
@@ -75,8 +79,6 @@ Requests a token from VTS. Saves the token into global.SAMMIVtubeStudioExtension
 Param | Description
 ------------- | -------------
 None | None
-
-  
 
 ##### VtubeStudio - Authenticate
 Uses a token to authenticate with the VTS API Server.
@@ -109,7 +111,7 @@ Pulls data about the currently loaded model.
 
 Param | Description
 ------------- | -------------
-Variable | Variable to save the response into
+Save Variable As  | Variable to save the response into
 Pull Value | Response Property. Leave blank to save entire response or select a property from the dropdown
 Global | Checkbox. If true, variable will be inserted into the global object
 Delay (ms) | Native to SAMMI
@@ -165,7 +167,7 @@ Delay (ms) | Native to SAMMI
 
 Param | Description
 ------------- | -------------
-Variable | Variable to save the response into
+Save Variable As | Variable to save the response into
 includeAvailableSpots | Checkbox. If true, will return an array of numbers representing currently available order-spots, -30 to 30.
 includeItemInstancesInScene | Checkbox. Returns an array of items are currently loaded in the scene.
 includeAvailableItemFiles | Checkbox. Returns an array of item files that are available to be loaded.
@@ -196,18 +198,112 @@ You will want to provide a variable name that the command will save the response
 
 Toggles a single specific expression on the model. The command takes in a variable value for the On/Off state. So you may enter in "true" or "false" or, more useful in certain cases, a boolean variable.
 
+##### VtubeStudio - PostProcessing - Helper - Add Effect to Array (BETA)
+⚠️ **THIS COMMAND IS SUBJECT TO CHANGE** ⚠️
+This command allows you to add a string to an array. It also allows you to select from a list of strings, which represent the various
+possible VFX types in vTubeStudio. This is useful as a reference as well if you want to set it yourself.
+[Here is a reference for the possible types](https://github.com/DenchiSoft/VTubeStudio/blob/master/Files/Effects.cs)
+
+*BEWARE* that this command does not execute right away. You need to wait a little bit (with a timeout) for the array
+to actually be updated.
+
+Param | Description
+------------- | -------------
+Effect to add to array | Choose from a list (or type your own) of VFX types that are built into VTS.
+Array Name | Provide the name of the array that you wish to add the effect to (string). If it does not exist, it will be created.
+Delay (ms) | Native to SAMMI
+
+##### VtubeStudio - PostProcessing List Get (BETA)
+⚠️ **THIS COMMAND IS SUBJECT TO CHANGE** ⚠️
+[API Reference](https://github.com/DenchiSoft/VTubeStudio?tab=readme-ov-file#get-list-of-post-processing-effects-and-state)
+
+This command returns the general state of the post-processing system, a list of all existing (user-created) post-processing presets, and a list of all available post-processing effects with their current value (current post-processing state).
+
+Param | Description
+------------- | -------------
+Include Presets? | Determines if VTS should respond with a list of presets (user defined; if you haven't created one, there won't be any).
+Include VFX? | Determines if VTS should include a list of VFX types and their configuration settings, which tells you about their current state and can be used as a reference.
+effectIDFilter (array name of blank) | Leave blank to include all VFX. If provided, this should be the name of an array of strings. VTS will only return the VFX that have been specified.
+Save Variable As | Specify the variable name that you want the response to be saved into.
+Delay (ms) | Native to SAMMI
+
+##### VtubeStudio - PostProcessing - Helper - Create Config Object (BETA)
+⚠️ **THIS COMMAND IS SUBJECT TO CHANGE** ⚠️
+[Here is a reference to the possible config types and possible values](https://github.com/DenchiSoft/VTubeStudio/blob/master/Files/EffectConfigs.cs)
+This command is a shortcut for creating an object for the purpose of setting and configuring VFX in VTS.
+The resulting object should be added to an array that will be provided to the VtubeStudio - PostProcessing Set (BETA) command's Config Array field. More below.
+
+*BEWARE* that this command does not execute right away. You need to wait a little bit (with a timeout) for the array
+to actually be updated.
+
+Param | Description
+------------- | -------------
+Config Name | Type your own or select from a list of predefined configuration types (it is a long list; please use search).
+Config Value | YOU REALLY NEED TO KNOW WHAT YOU ARE DOING HERE. Provide a value for the selected config type. Most of the time, this is a float or boolean value. Please refer to the reference above or the response from VtubeStudio - PostProcessing List Get (BETA).
+Save Variable As | Specify the variable name that you want the object to be saved to.
+Delay (ms) | Native to SAMMI
+
+##### VtubeStudio - PostProcessing Simple On/Off (BETA)
+[API Reference](https://github.com/DenchiSoft/VTubeStudio?tab=readme-ov-file#set-post-processing-effects)
+⚠️ **THIS COMMAND IS SUBJECT TO CHANGE** ⚠️
+This is a simple command that just turns on or off Post Processing/VFX in VTS without changing anything about the configuration.
+
+Param | Description
+------------- | -------------
+On/Off | Accepts a variable via /$$/. Also accepts 0 or 1. Might accept "true" and "false"? All other inputs are treated as *off*.
+Save Variable As | Specify the variable name that you want the response to be saved into.
+Delay (ms) | Native to SAMMI
+
+##### VtubeStudio - PostProcessing Set (BETA)
+[API Reference](https://github.com/DenchiSoft/VTubeStudio?tab=readme-ov-file#set-post-processing-effects)
+⚠️ **THIS COMMAND IS SUBJECT TO CHANGE** ⚠️
+This command allows you to turn on VFX while also defining the configuration. Please refer to the API reference above for more context.
+There are a lot of options and rules for how it works.
+
+Param | Description
+------------- | -------------
+On/Off | Accepts a variable via /$$/. Also accepts 0 or 1. Might accept "true" and "false"? All other inputs are treated as *off*.
+Fade (sec) | Allows you to define the transition time for changing effects and has to be between 0 and 2 (seconds). 
+Set Missing to Default |  Determines whether all other values (the ones you didn't put in your payload) will be left unchanged or faded back to their default value, meaning all unmentioned effects will be turned off.
+Allow Restricted VFX | If you want to use any restricted/experimental Effects when setting config values directly, make sure usingRestrictedEffects has been set to true in your payload. This is just a sanity-check to make sure those effects aren't used accidentally.
+Randomize | You can also request all effect configs to be randomized. This is just for fun. All other config will be ignored when this is on.
+Chaos Level | 0 - 100. Controls how random Randomize is.
+Config Array | This should be the name of an array of objects that contain configuration settings. Refer to VtubeStudio - PostProcessing - Helper - Create Config Object (BETA). You can run that command as a test just to see what the object should look like and then create it yourself in whatever way you choose.
+Save Variable As | Specify the variable name that you want the response to be saved into.
+Delay (ms) | Native to SAMMI
+
+
+##### VtubeStudio - PostProcessing Set by Preset(BETA)
+[API Reference](https://github.com/DenchiSoft/VTubeStudio?tab=readme-ov-file#set-post-processing-effects)
+⚠️ **THIS COMMAND IS SUBJECT TO CHANGE** ⚠️
+This is mostly the same as VtubeStudio - PostProcessing Set (BETA), except allows you to define a preset. I haven't really tested the behavior of this.
+But basically, you provide the name of a preset and this command can turn it on or edit it.
+
+Param | Description
+------------- | -------------
+On/Off | Accepts a variable via /$$/. Also accepts 0 or 1. Might accept "true" and "false"? All other inputs are treated as *off*.
+Fade (sec) | Allows you to define the transition time for changing effects and has to be between 0 and 2 (seconds). 
+presetToSet | Name of preset. It might be case-sensitive? I am not sure.
+Set Missing to Default |  Determines whether all other values (the ones you didn't put in your payload) will be left unchanged or faded back to their default value, meaning all unmentioned effects will be turned off.
+Allow Restricted VFX | If you want to use any restricted/experimental Effects when setting config values directly, make sure usingRestrictedEffects has been set to true in your payload. This is just a sanity-check to make sure those effects aren't used accidentally.
+Randomize | You can also request all effect configs to be randomized. This is just for fun. All other config will be ignored when this is on.
+Chaos Level | 0 - 100. Controls how random Randomize is.
+Config Array | This should be the name of an array of objects that contain configuration settings. Refer to VtubeStudio - PostProcessing - Helper - Create Config Object (BETA). You can run that command as a test just to see what the object should look like and then create it yourself in whatever way you choose.
+Save Variable As | Specify the variable name that you want the response to be saved into.
+Delay (ms) | Native to SAMMI
+
 ##### VtubeStudio - Listen to Event
 Param | Description
 ------------- | -------------
 Event | Select. The event to subscribe to
-Variable | Variable to save the response into
+Save Variable As  | Variable to save the response into
 Delay (ms) | Native to SAMMI
 
 ##### VtubeStudio - Unsubscribe from Event
 Param | Description
 ------------- | -------------
 Event | Select. The event to unsubscribe from
-Variable | Variable to save the response into
+Save Variable As  | Variable to save the response into
 Delay (ms) | Native to SAMMI
 
 ###### VtubeStudio Extension Triggers
