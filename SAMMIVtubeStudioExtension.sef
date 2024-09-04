@@ -44,7 +44,10 @@ VTUBESTUDIO_WebSocket_ReadyStates = { CONNECTING: 0, OPEN: 1, CLOSING: 2, CLOSED
 
 //#region Insert Commands
 //Inserts base extension commands into SAMMI
+//TODO Move to private space
 function SAMMIVTS_insertBaseCommands() {
+	const saveAsVariableBox = ["Save Variable As", 14, ""]
+
 	const vtsStatsProps = ["*leave blank to save entire response*","uptime","framerate","vTubeStudioVersion","allowedPlugins",
 	"connectedPlugins","startedWithSteam","windowWidth","windowHeight","windowIsFullscreen",];
 
@@ -95,7 +98,7 @@ function SAMMIVTS_insertBaseCommands() {
 	SAMMI.extCommand("VtubeStudio - Pull Value",3355443, 52, {
 		PullValue: ["Pull Value", 20, "", null, commonModelDataProps],
 		Global: ["Global", 2, false],
-		variable: ["Save Variable As", 14, ""]
+		variable: saveAsVariableBox
 	});
 
 	SAMMI.extCommand("VtubeStudio - Get Items List",3355443, 80, {
@@ -104,7 +107,7 @@ function SAMMIVTS_insertBaseCommands() {
 		includeAvailableItemFiles: ["includeAvailableItemFiles", 2, false],
 		onlyItemsWithFileName: ["onlyItemsWithFileName", 14, ""],
 		onlyItemsWithInstanceID: ["onlyItemsWithInstanceID", 14, ""],
-		variable: ["Save Variable As", 14, ""]
+		variable: saveAsVariableBox
 	});
 
 	SAMMI.extCommand("VtubeStudio - Load Item",3355443, 80, {
@@ -121,7 +124,7 @@ function SAMMIVTS_insertBaseCommands() {
 		flipped: ["flipped", 2, false],
 		locked: ["locked", 2, false],
 		unloadWhenPluginDisconnects: ["unloadWhenPluginDisconnects", 2, true],
-		variable: ["Save Variable As", 14, ""]
+		variable: saveAsVariableBox
 	});
 
 	SAMMI.extCommand("VtubeStudio - Remove Item",3355443, 80, {
@@ -130,7 +133,7 @@ function SAMMIVTS_insertBaseCommands() {
 		allowUnloadingItemsLoadedByUserOrOtherPlugins: ["Allow Removal of Items (by other than SAMMI)", 2, true],
 		instanceIDs: ["instanceIDs ArrayName", 14, ""],
 		fileNames: ["fileNames ArrayName", 14, ""],
-		variable: ["Save Variable As", 14, ""]
+		variable: saveAsVariableBox
 	});
 
 	SAMMI.extCommand("VtubeStudio - Control Animation",3355443, 80, {
@@ -143,7 +146,7 @@ function SAMMIVTS_insertBaseCommands() {
 		autoStopFrames: ["autoStopFrames", 14, ""],
 		setAnimationPlayState: ["setAnimationPlayState", 2, true],
 		animationPlayState: ["animationPlayState", 2, true],
-		variable: ["Save Variable As (Not used)", 14, ""]
+		variable: saveAsVariableBox //Not used
 	});
 
 	//TODO Move Items UI needs to be improved to be more user friendly
@@ -151,7 +154,7 @@ function SAMMIVTS_insertBaseCommands() {
 		itemsToMove: ["itemsToMove Variable Name", 14, ""],
 		//TODO This sucks ass
 		dev_note: ["Request model", 0, `{\n"itemInstanceID": "ItemInstanceId",\n"timeInSeconds": 1,\n"fadeMode": "easeOut",\n"positionX": 0.2,\n"positionY": -0.8,\n"size": 0.6,\n"rotation": 180,\n"order": -1000,\n"setFlip": true,\n"flip": false,\n"userCanStop": true\n}`],
-		variable: ["Save Variable As (Not used)", 14, ""]
+		variable: saveAsVariableBox //Not used
 	});
 
 	SAMMI.extCommand("VtubeStudio - PostProcessing List Get (BETA)",3355443, 80, {
@@ -166,36 +169,72 @@ function SAMMIVTS_insertBaseCommands() {
 		variable: ["Save Variable As", 14, "", 1.5]
 	});
 
+	const postProcessingEffects = [
+		"ColorGrading","WeatherEffects","Bloom","Backlight","CustomParticles","BackgroundShift","SimpleOverlay",
+		"Vignette","ChromaticAberration","OldFilm","Lowfps","Datamosh","LineScanner","ParticleShower","AnalogGlitch",
+		"DigitalGlitch","Letterbox","FoggyWindow","Speedlines","Pixelation","LensDistortion","WaveDistortion","BlurEffects",
+		"Grain","Vhs","Outline","Posterize","Ascii","ModelGlitch"
+	]
+	//https://github.com/DenchiSoft/VTubeStudio/blob/master/Files/EffectConfigs.cs
+	SAMMI.extCommand("VtubeStudio - PostProcessing - Helper - Add Effect to Array (BETA)",3355443, 30, {
+		effectName: ["Effect to add to array", 20, "", 0.8, postProcessingEffects],
+		variable: ["Array Name", 14, "",0.8],
+		dev_note: ["Note", 0, "The array is not updated right away. \nYou may need to wait. \nAlso useful as a reference.", 1.4]
+	});
+
+	const postProcessingConfigTypes = ["ColorGrading_Strength","ColorGrading_HueShift","ColorGrading_Saturation","ColorGrading_Brightness","ColorGrading_Contrast","ColorGrading_ColorFilter","ColorGrading_WhitebalanceTemperature","ColorGrading_WhitebalanceTint","ColorGrading_Invert","WeatherEffects_RainStrength","WeatherEffects_SnowStrength","WeatherEffects_RainInFront","WeatherEffects_SnowInFront","Bloom_Strength",
+		"Bloom_ModelColorDarken","Bloom_BackgroundColorDarken","Bloom_MainThreshold","Bloom_MainIntensity","Bloom_MainColorTint","Bloom_StreakThreshold","Bloom_StreakIntensity","Bloom_StreakColorTint","Bloom_StreakVertical","Bloom_MicIncreasesBloom","Bloom_Quality","Backlight_Strength","Backlight_BgBlurOverModel","Backlight_BgBlurOverBg","Backlight_DarkenModel",
+		"Backlight_DarkenBg","Backlight_StrengthNormal","Backlight_StrengthDirectional","Backlight_BrightnessLimit","Backlight_BacklightDirection","Backlight_BacklightBothDirections","Backlight_BacklightSoftness","Backlight_BacklightColorTint","Backlight_BacklightColorFromBg","Backlight_OutlineSize","Backlight_OutlineColorMain","Backlight_OutlineColorStripes","Backlight_OutlineStripeCount",
+		"Backlight_OutlineStripeSpeed","Backlight_OutlineStripeCurve","Backlight_ShadowMainColor","Backlight_ShadowOffsetX","Backlight_ShadowOffsetY","CustomParticles_Strength","CustomParticles_BaseMoveWithHead","CustomParticles_SparkleStrength","CustomParticles_SparkleSize","CustomParticles_SparkleColorA","CustomParticles_SparkleColorB","CustomParticles_FloatyStrength",
+		"CustomParticles_FloatySize","CustomParticles_FloatyColorA","CustomParticles_FloatyColorB","CustomParticles_CloudStrength","CustomParticles_CloudSize","CustomParticles_CloudColorA","CustomParticles_CloudColorB","CustomParticles_SphereStrength","CustomParticles_SphereSize","CustomParticles_SphereColorA","CustomParticles_SphereColorB","CustomParticles_HeartsStrength","CustomParticles_HeartsSize","CustomParticles_HeartsColorA",
+		"CustomParticles_HeartsColorB","CustomParticles_Custom1TextureFile","CustomParticles_Custom1ColorA","CustomParticles_Custom1ColorB","CustomParticles_Custom1MaterialTypeId","CustomParticles_Custom1InBack","CustomParticles_Custom1MoveWithHead","CustomParticles_Custom1Size","CustomParticles_Custom1Amount","CustomParticles_Custom1FillToCenter","CustomParticles_Custom1BaseRotation","CustomParticles_Custom1RotationSpeed","CustomParticles_Custom1MoveFasterMicVol",
+		"CustomParticles_Custom2TextureFile","CustomParticles_Custom2ColorA","CustomParticles_Custom2ColorB","CustomParticles_Custom2MaterialTypeId","CustomParticles_Custom2InBack","CustomParticles_Custom2MoveWithHead","CustomParticles_Custom2Size","CustomParticles_Custom2Amount","CustomParticles_Custom2FillToCenter","CustomParticles_Custom2BaseRotation","CustomParticles_Custom2RotationSpeed","CustomParticles_Custom2MoveFasterMicVol","BackgroundShift_Strength",
+		"BackgroundShift_ZoomIn","BackgroundShift_MicZoomIn","BackgroundShift_TrackingX","BackgroundShift_TrackingY","BackgroundShift_TrackingSmoothing","BackgroundShift_RandomMovementX","BackgroundShift_RandomMovementY","BackgroundShift_RandomMovementRotation","BackgroundShift_RandomMovementSpeed","BackgroundShift_BlurMixBack","BackgroundShift_BlurMainBack","BackgroundShift_BlurBrightnessBack",
+		"BackgroundShift_BlurMixFront","BackgroundShift_BlurMainFront","BackgroundShift_BlurBrightnessFront","SimpleOverlay_Strength","SimpleOverlay_TextureFile","SimpleOverlay_ZoomIn","SimpleOverlay_TrackingX","SimpleOverlay_TrackingY","SimpleOverlay_TrackingSmoothing","SimpleOverlay_RandomMovementX","SimpleOverlay_RandomMovementY",
+		"SimpleOverlay_RandomMovementRotation","SimpleOverlay_RandomMovementSpeed","SimpleOverlay_TintColor","Vignette_Strength","Vignette_Smoothness","Vignette_Color","Vignette_CenterX","Vignette_CenterY","Vignette_Roundness","Vignette_Circular",
+		"ChromaticAberration_Strength","ChromaticAberration_BlurEdges","OldFilm_Strength","OldFilm_FilmFps","OldFilm_FilmContrast","OldFilm_FilmBurn","OldFilm_FilmSceneCut","Lowfps_Strength","Lowfps_FpsLimit","Lowfps_FpsRandom","Lowfps_ScreenTearing",
+		"Datamosh_Strength","Datamosh_Size","Datamosh_ResetAfterSecs","Datamosh_Entropy","Datamosh_NoiseContrast","Datamosh_VelocityScale","Datamosh_Diffusion","LineScanner_Strength","LineScanner_Direction","LineScanner_ScanStepTotal","LineScanner_ScanStepSize","LineScanner_ScanLineColor","LineScanner_ScanLineSize","LineScanner_ScanLineWaitBetweenScansSecs","ParticleShower_Strength","ParticleShower_TextureFile1",
+		"ParticleShower_TextureFile2","ParticleShower_TextureFile3","ParticleShower_Speed1","ParticleShower_Speed2","ParticleShower_Speed3","ParticleShower_InBack1","ParticleShower_InBack2","ParticleShower_InBack3","AnalogGlitch_Strength","AnalogGlitch_ScanlineJitter","AnalogGlitch_VerticalJump","AnalogGlitch_HorizontalShake","AnalogGlitch_ColorDrift","AnalogGlitch_MicEffect",
+		"DigitalGlitch_Strength","DigitalGlitch_Colorshift","DigitalGlitch_MicEffect","Letterbox_Strength","Letterbox_ProgressY","Letterbox_ProgressX","Letterbox_Zoom","Letterbox_Color","FoggyWindow_Strength","FoggyWindow_FogStrength","FoggyWindow_FogTint","FoggyWindow_FogBoost","FoggyWindow_RaindropVisibility","FoggyWindow_RaindropSpeed","FoggyWindow_RaindropSize","FoggyWindow_FogWipeSize","FoggyWindow_FogWipeLifetimeSeconds",
+		"FoggyWindow_FogLifetimeInfinite","Speedlines_Strength","Speedlines_XCenter","Speedlines_YCenter","Speedlines_ColorA","Speedlines_ColorB","Speedlines_MicEffect","Pixelation_Strength","Pixelation_Resolution","Pixelation_Colorize","Pixelation_C1","Pixelation_C2","Pixelation_C3","Pixelation_C4",
+		"Pixelation_C5","Pixelation_C6","Pixelation_C7","Pixelation_C8","Pixelation_Fry","LensDistortion_Strength","LensDistortion_LensStrength","LensDistortion_ZoomIn","LensDistortion_Squish","WaveDistortion_Strength","WaveDistortion_HeatStrength","WaveDistortion_RaindropStrength","WaveDistortion_RaindropFrequency","WaveDistortion_ZoomIn",
+		"WaveDistortion_RotationBase","WaveDistortion_WaveXStrength","WaveDistortion_WaveXScroll","WaveDistortion_WaveXFrequency","WaveDistortion_WaveYStrength","WaveDistortion_WaveYScroll","WaveDistortion_WaveYFrequency","BlurEffects_Strength","BlurEffects_BasicBlurVisibility","BlurEffects_BasicBlurStrength","BlurEffects_PixelationBlur","BlurEffects_MotionBlur","Grain_Strength","Grain_Size",
+		"Grain_Luminosity","Grain_Colored","Vhs_Strength","Vhs_Fisheye","Vhs_Vignette","Vhs_ScreenBleed","Vhs_NoiseGrain","Vhs_NoiseLines","Vhs_TwitchVertical","Vhs_TwitchHorizontal","Vhs_Interlacing","Vhs_GammaCorrection","Vhs_PaleColor",
+		"Vhs_AfterImageAmount","Vhs_AfterImageColor","Outline_Strength","Outline_Sharpen","Outline_Visibility","Outline_Color","Outline_Threshold","Outline_Contrast","Posterize_Strength","Ascii_Strength","Ascii_Size","Ascii_CharacterVisibility","Ascii_CharacterColorStrength","Ascii_CharacterColor",
+		"ModelGlitch_StrengthExplode","ModelGlitch_StrengthWiggle","ModelGlitch_StrengthPulse","ModelGlitch_StrengthLiquify"];
+
+	SAMMI.extCommand("VtubeStudio - PostProcessing - Helper - Create Config Object (BETA)",3355443, 30, {
+		"configID": ["Config Name", 20, "", null, postProcessingConfigTypes],//"Backlight_Strength",
+		"configValue": ["Config Value", 14, ""],//"0.8"
+		variable: saveAsVariableBox
+	});
+
+	//https://github.com/DenchiSoft/VTubeStudio/blob/master/Files/EffectConfigs.cs
 	SAMMI.extCommand("VtubeStudio - PostProcessing Set (BETA)",3355443, 30, {
 		postProcessingOn: ["On/Off", 14, ""], //NOTE /$variable$/ works!
 		postProcessingFadeTime: ["Fade (sec)", 14, ""],
 		setAllOtherValuesToDefault: ["Set Missing to Default", 2, false],
 		usingRestrictedEffects: ["Allow Restricted VFX", 2, false],
 		randomizeAll: ["Randomize", 2, false],
-		randomizeAllChaosLevel: ["Chaos Level", 11, false], //TODO Fix
-		postProcessingValues: ["postProcessingValues (Takes an array of obj)", 15, null],
-		variable: ["Save Variable As", 14, ""]
+		randomizeAllChaosLevel: ["Chaos Level", 11, false],
+		postProcessingValues: ["Config Array", 14, ""],
+		variable: saveAsVariableBox
 	});
 
 	SAMMI.extCommand("VtubeStudio - PostProcessing Set by Preset(BETA)",3355443, 30, {
-		postProcessingOn: ["On/Off", 14, ""],
+		postProcessingOn: ["On/Off", 14, ""], //NOTE /$variable$/ works!
 		postProcessingFadeTime: ["Fade (sec)", 14, ""],
-		presetToSet: ["Preset Name", 14, null],
+		presetToSet: ["Preset Name", 14, ""],
 		setAllOtherValuesToDefault: ["Set Missing to Default", 2, false],
 		usingRestrictedEffects: ["Allow Restricted VFX", 2, false],
 		randomizeAll: ["Randomize", 2, false],
 		randomizeAllChaosLevel: ["Chaos Level", 11, false],
-		postProcessingValues: ["postProcessingValues (Takes an array of obj)", 15, null],
-		variable: ["Save Variable As", 14, ""]
+		postProcessingValues: ["Config Array", 14, ""],
+		variable: saveAsVariableBox
 	});
 
-	// SAMMI.extCommand("VtubeStudio - Create PostProcessing Object",3355443, 30, {
-		// "configID": ["Effect", 20, "", null, postProcessingEffects],//"Backlight_Strength",
-		// "configValue": ["Value", 14, ""]//"0.8"
-	// });
-
 	SAMMI.extCommand("VtubeStudio - Get VTS Info",3355443, 30, {
-		variable: ["Save Variable As", 14, ""],
+		variable: saveAsVariableBox,
 		pullValue: ["Pull Value", 20, "", null, vtsStatsProps],
 	});
 
@@ -204,12 +243,12 @@ function SAMMIVTS_insertBaseCommands() {
 
 	SAMMI.extCommand("VtubeStudio - Listen to Event",3355443, 80, {
 		Event: ["Event", 20, "", null, events],
-		variable: ["Save Variable As", 14, ""]
+		variable: saveAsVariableBox
 	});
 
 	SAMMI.extCommand("VtubeStudio - Unsubscribe from Event",3355443, 80, {
 		Event: ["Event", 20, "", null, events],
-		variable: ["Save Variable As", 14, ""]
+		variable: saveAsVariableBox
 	});
 
 	//ExpressionStateRequest
@@ -217,7 +256,7 @@ function SAMMIVTS_insertBaseCommands() {
 	SAMMI.extCommand("VtubeStudio - Get Expression State",3355443, 80, {
 		ExpressionFile: ["Expression File Name (Leave blank to get all)", 14, "example.exp3.json"],
 		Details: ["Include Details", 2, false],
-		variable: ["Save Variable As", 14, ""]
+		variable: saveAsVariableBox
 	});
 
 	//ExpressionActivationRequest
@@ -231,6 +270,7 @@ function SAMMIVTS_insertBaseCommands() {
 
 //#region Insert Hooks
 //(We don't call them that anymore)
+//TODO Move to private space
 function SAMMIVTS_insertCommandHooks() {
 	sammiclient.on('VtubeStudio - Request Token', async (json) => {
 		const data = json.Data;
@@ -466,6 +506,7 @@ function SAMMIVTS_insertCommandHooks() {
 		requestVTSEventUnSubscribe({requestID: requestID, event: SAMMIJSON.Event});
 	});
 	
+	//#region Hooks: PostProcessing VFX
 	sammiclient.on('VtubeStudio - PostProcessing List Get (BETA)', async (json) => {
 		const SAMMIJSON = json.Data;
 		const requestID = uuidv4();
@@ -491,6 +532,17 @@ function SAMMIVTS_insertCommandHooks() {
 		requestPostProcessingListRequest({requestID: requestID, data: data});
 	});
 	
+	sammiclient.on('VtubeStudio - PostProcessing - Helper - Add Effect to Array (BETA)', async (json) => {
+		const SAMMIJSON = json.Data;
+		const {effectName, variable: arrayName} = SAMMIJSON;
+		await SAMMI.getVariable(arrayName, SAMMIJSON.FromButton).then(async (response) => {
+			let array_value = [];
+			if (!!response.value) { array_value = response.value; }
+			array_value.push(effectName);
+			await SAMMI.setVariable(arrayName, array_value, SAMMIJSON.FromButton);
+		});
+	});
+
 	sammiclient.on('VtubeStudio - PostProcessing Simple On/Off (BETA)', async (json) => {
 		const SAMMIJSON = json.Data;
 		const requestID = uuidv4();
@@ -500,12 +552,21 @@ function SAMMIVTS_insertCommandHooks() {
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 			}
 		};
-		const {postProcessingOn,setPostProcessingPreset,setPostProcessingValues,presetToSet,postProcessingFadeTime,setAllOtherValuesToDefault,
-			usingRestrictedEffects,randomizeAll,randomizeAllChaosLevel,postProcessingValues} = SAMMIJSON;
+		const { postProcessingOn } = SAMMIJSON;
 		var data = {
 			postProcessingOn
 		}
 		requestPostProcessingUpdateRequest({requestID: requestID, data: data});
+	});
+
+	sammiclient.on('VtubeStudio - PostProcessing - Helper - Create Config Object (BETA)', async (json) => {
+		const SAMMIJSON = json.Data;
+		const { configID, configValue, variable } = SAMMIJSON;
+		var data = {
+			configID,
+			configValue
+		}
+		await SAMMI.setVariable(variable, data, SAMMIJSON.FromButton);
 	});
 
 	sammiclient.on('VtubeStudio - PostProcessing Set (BETA)', async (json) => {
@@ -518,7 +579,7 @@ function SAMMIVTS_insertCommandHooks() {
 			}
 		};
 		const {postProcessingOn,postProcessingFadeTime,setAllOtherValuesToDefault,
-			usingRestrictedEffects,randomizeAll,randomizeAllChaosLevel,postProcessingValues} = SAMMIJSON;
+			usingRestrictedEffects,randomizeAll,randomizeAllChaosLevel,postProcessingValues: postProcessingValuesArrayName} = SAMMIJSON;
 		var data = {
 			postProcessingOn,
 			setPostProcessingPreset: false,
@@ -529,12 +590,14 @@ function SAMMIVTS_insertCommandHooks() {
 			randomizeAll,
 			randomizeAllChaosLevel
 		}
-		if (postProcessingValues && postProcessingValues !== "") {
-			SAMMI.getVariable(postProcessingValues, SAMMIJSON.FromButton).then(postProcessingValuesVariable => {
+		if (postProcessingValuesArrayName && postProcessingValuesArrayName !== "") {
+			SAMMI.getVariable(postProcessingValuesArrayName, SAMMIJSON.FromButton).then(response => {
 				requestPostProcessingUpdateRequest({
 					requestID,
-					...data,
-					postProcessingValues: postProcessingValuesVariable.value
+					data: {
+						...data,
+						postProcessingValues: response.value
+					}
 				});
 			});
 			return;
@@ -553,7 +616,7 @@ function SAMMIVTS_insertCommandHooks() {
 			}
 		};
 		const {postProcessingOn,presetToSet,postProcessingFadeTime,setAllOtherValuesToDefault,
-			usingRestrictedEffects,randomizeAll,randomizeAllChaosLevel,postProcessingValues} = SAMMIJSON;
+			usingRestrictedEffects,randomizeAll,randomizeAllChaosLevel,postProcessingValues: postProcessingValuesArrayName} = SAMMIJSON;
 		var data = {
 			postProcessingOn,
 			setPostProcessingPreset: true,
@@ -565,12 +628,14 @@ function SAMMIVTS_insertCommandHooks() {
 			randomizeAll,
 			randomizeAllChaosLevel
 		}
-		if (postProcessingValues && postProcessingValues !== "") {
-			SAMMI.getVariable(postProcessingValues, SAMMIJSON.FromButton).then(postProcessingValuesVariable => {
+		if (postProcessingValuesArrayName && postProcessingValuesArrayName !== "") {
+			SAMMI.getVariable(postProcessingValuesArrayName, SAMMIJSON.FromButton).then(response => {
 				requestPostProcessingUpdateRequest({
 					requestID,
-					...data,
-					postProcessingValues: postProcessingValuesVariable.value
+					data: {
+						...data,
+						postProcessingValues: response.value
+					}
 				});
 			});
 			return;
@@ -578,11 +643,13 @@ function SAMMIVTS_insertCommandHooks() {
 		
 		requestPostProcessingUpdateRequest({requestID: requestID, data: data});
 	});
+	//#endregion Hooks: PostProcessing VFX
 }
 //#endregion
 
 //#region Interpret API Response
 //This is the master logic for recieving responses from the VTS server
+//TODO Move to private space
 function interpretResponse(responseData) {
 	if (!responseData) { throw 'interpretResponse: responseData cannot be null!'; }
 	console.debug("Received Message of Type: " + responseData.messageType)
@@ -728,6 +795,7 @@ function interpretResponse(responseData) {
 //#endregion
 
 //Create the socket by which to faciliate comms with VTS with
+//TODO Move to private space
 function createVTSWebSocketClient(callback = null) {
 	SAMMIVTS_postSAMMIMessage('Checking client');
 	if (!window.VTUBESTUDIO_WebSocket || window.VTUBESTUDIO_WebSocket.readyState === VTUBESTUDIO_WebSocket_ReadyStates.CLOSED) {
@@ -764,6 +832,7 @@ function createVTSWebSocketClient(callback = null) {
 }
 
 //#region Request Functions
+//TODO Move to private space
 function sendMessageToVtubeStudio(request) {
 	//TODO Need better retry logic, maybe implement a queuing system? Also, how do you spell that word?
 	if (window.VTUBESTUDIO_WebSocket) {
@@ -790,6 +859,7 @@ function sendMessageToVtubeStudio(request) {
 	}
 };
 
+//TODO Move to private space
 async function requestVtubeStudioAuthenticationToken({requestID}) {
 	SAMMIVTS_postSAMMIMessage('Plugin is asking for authentication in VTube Studio', 0);
 	const request = await SAMMIVTS_generateBaseRequest("AuthenticationTokenRequest");
@@ -798,18 +868,21 @@ async function requestVtubeStudioAuthenticationToken({requestID}) {
 	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestAuthentication({requestID}) {
 	let request = await SAMMIVTS_generateBaseRequest("AuthenticationRequest");
 	request.requestID = requestID;
 	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestListOfModels() {
 	let request = await SAMMIVTS_generateBaseRequest("AvailableModelsRequest");
 	sendMessageToVtubeStudio(request);
 
 }
 
+//TODO Move to private space
 async function requestModelHotKeys(modelID = null, requestID = null) {
 	let request = await SAMMIVTS_generateBaseRequest("HotkeysInCurrentModelRequest");
 	request.data.modelID = modelID;
@@ -817,6 +890,7 @@ async function requestModelHotKeys(modelID = null, requestID = null) {
 	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestHotkeyTrigger(hotkeyID, instanceID = null) {
 	let request = await SAMMIVTS_generateBaseRequest("HotkeyTriggerRequest");
 	request.data.hotkeyID = hotkeyID;
@@ -826,6 +900,7 @@ async function requestHotkeyTrigger(hotkeyID, instanceID = null) {
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestItemList(obj, includeAvailableSpots = false, includeItemInstancesInScene = false, includeAvailableItemFiles = false, onlyItemsWithFileName = "", onlyItemsWithInstanceID = "") {
 	let request = await SAMMIVTS_generateBaseRequest("ItemListRequest");
 	request = {...request, ...obj};
@@ -840,6 +915,7 @@ async function requestItemList(obj, includeAvailableSpots = false, includeItemIn
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestLoadItem(
 	{
 		requestID,
@@ -893,6 +969,7 @@ async function requestLoadItem(
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestRemoveItem({
 	requestID,
 	unloadAllInScene,
@@ -920,6 +997,7 @@ async function requestRemoveItem({
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestItemAnimationControl({
 	requestID,
 	itemInstanceID,
@@ -963,6 +1041,7 @@ async function requestItemAnimationControl({
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestItemMove({requestID, itemsToMove}) {
 	if (itemsToMove.length < 1) return;
 	if (typeof itemsToMove[0] == "string") itemsToMove = itemsToMove.map(e => { return JSON.parse(e) });
@@ -975,6 +1054,7 @@ async function requestItemMove({requestID, itemsToMove}) {
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestLoadModel(modelID) {
 	if (!modelID) { throw "modelID cannot be null or undefined" }
 	let request = await SAMMIVTS_generateBaseRequest("ModelLoadRequest");
@@ -982,6 +1062,7 @@ async function requestLoadModel(modelID) {
 	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestMoveModel(posX = null, posY = null, rotation = null, size = null, time = 0.2, relativeValues = false) {
 	let request = await SAMMIVTS_generateBaseRequest("MoveModelRequest");
 	request.data = {
@@ -996,18 +1077,21 @@ async function requestMoveModel(posX = null, posY = null, rotation = null, size 
 }
 
 //TODO I feel like some of these are just the same function over and over with slight differences
+//TODO Move to private space
 async function requestCurrentModelData(obj) {
 	let request = await SAMMIVTS_generateBaseRequest("CurrentModelRequest");
 	request = {...request, ...obj};
 	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestVTSStats({requestID}) {
 	let request = await SAMMIVTS_generateBaseRequest("StatisticsRequest");
 	request.requestID = requestID;
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 //https://github.com/DenchiSoft/VTubeStudio#requesting-current-expression-state-list
 async function requestExpressionStateRequest({requestID, expressionFile, details}) {
 	let request = await SAMMIVTS_generateBaseRequest("ExpressionStateRequest");
@@ -1017,6 +1101,7 @@ async function requestExpressionStateRequest({requestID, expressionFile, details
 	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 //https://github.com/DenchiSoft/VTubeStudio#requesting-activation-or-deactivation-of-expressions
 async function requestExpressionActivationRequest({requestID, expressionFile, active}) {
 	let request = await SAMMIVTS_generateBaseRequest("ExpressionActivationRequest");
@@ -1026,6 +1111,7 @@ async function requestExpressionActivationRequest({requestID, expressionFile, ac
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 //https://github.com/DenchiSoft/VTubeStudio?tab=readme-ov-file#set-post-processing-effects
 async function requestPostProcessingUpdateRequest({requestID, data}) {
 	let request = await SAMMIVTS_generateBaseRequest("PostProcessingUpdateRequest");
@@ -1034,6 +1120,7 @@ async function requestPostProcessingUpdateRequest({requestID, data}) {
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 //https://github.com/DenchiSoft/VTubeStudio?tab=readme-ov-file#get-list-of-post-processing-effects-and-state
 async function requestPostProcessingListRequest({requestID, data}) {
 	let request = await SAMMIVTS_generateBaseRequest("PostProcessingListRequest");
@@ -1042,6 +1129,7 @@ async function requestPostProcessingListRequest({requestID, data}) {
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 function requestRefresh() {
 	SAMMIVTS_postSAMMIMessage("Refreshing model and hotkey list");
 	requestListOfModels();
@@ -1049,6 +1137,7 @@ function requestRefresh() {
 //#endregion End Request Functions for VTS
 
 //#region Helper Functions
+//TODO Move to private space
 async function SAMMIVTS_getVTSAuthToken() {
 	let token = null;
 	await SAMMI.getVariable("SAMMIVtubeStudioExtension_AuthToken", "global").then(tokenObj => {
@@ -1057,6 +1146,7 @@ async function SAMMIVTS_getVTSAuthToken() {
 	return token;
 }
 
+//TODO Move to private space
 async function SAMMIVTS_generateBaseRequest (messageType) {
 	let token = await SAMMIVTS_getVTSAuthToken();
 	if (messageType !== "AuthenticationTokenRequest" && !token) SAMMIVTS_postSAMMIMessage("Warning - Token is missing. Command will not work.")
@@ -1074,6 +1164,7 @@ async function SAMMIVTS_generateBaseRequest (messageType) {
 	};
 }
 
+//TODO Move to private space
 async function requestVTSEventSubscription({requestID, event}) {
 	let request = await SAMMIVTS_generateBaseRequest("EventSubscriptionRequest");
 	request.requestID = requestID;
@@ -1087,6 +1178,7 @@ async function requestVTSEventSubscription({requestID, event}) {
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 async function requestVTSEventUnSubscribe({requestID, event}) {
 	let request = await SAMMIVTS_generateBaseRequest("EventSubscriptionRequest");
 	request.requestID = requestID;
@@ -1098,6 +1190,7 @@ async function requestVTSEventUnSubscribe({requestID, event}) {
   	sendMessageToVtubeStudio(request);
 }
 
+//TODO Move to private space
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -1105,6 +1198,7 @@ function uuidv4() {
     });
 }
 
+//TODO Move to private space
 function SAMMIVTS_postSAMMIMessage(message, level = 1) {
 	switch(level) {
 		case 0:
@@ -1116,10 +1210,12 @@ function SAMMIVTS_postSAMMIMessage(message, level = 1) {
 	}
 }
 
+//TODO Move to private space
 function SAMMIVTS_postConsoleMessage(message) {
 	console.debug(`${VTUBESTUDIO_PLUGINNAME}: ${message}`);
 }
 
+//TODO Move to private space
 function getVTSHotKeyIdentifier(hotkeyName, modelName) {
 	return `${hotkeyName.toLowerCase()} - (${modelName.toLowerCase()})`;
 }
