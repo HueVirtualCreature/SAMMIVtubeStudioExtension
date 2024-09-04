@@ -35,12 +35,12 @@ Please feel free to submit a bug report or to DM me directly on Twitter if you n
 * [VtubeStudio - Get Expression State](#vtubestudio---get-expression-state)
 * [VtubeStudio - Toggle Expression](#vtubestudio---toggle-expression)
 
-* [VtubeStudio - PostProcessing - Helper - Add Effect to Array (BETA)](#vtubestudio---toggle-expression)
-* [VtubeStudio - PostProcessing List Get (BETA)](#vtubestudio---toggle-expression)
-* [VtubeStudio - PostProcessing - Helper - Create Config Object (BETA)](#vtubestudio---toggle-expression)
-* [VtubeStudio - PostProcessing Simple On/Off (BETA)](#vtubestudio---toggle-expression)
-* [VtubeStudio - PostProcessing Set (BETA)](#vtubestudio---toggle-expression)
-* [VtubeStudio - PostProcessing Set by Preset(BETA)](#vtubestudio---toggle-expression)
+* [VtubeStudio - PostProcessing - Helper - Add Effect to Array (BETA)](#vtubestudio---postprocessing---helper---add-effect-to-array-beta)
+* [VtubeStudio - PostProcessing List Get (BETA)](#vtubestudio---postprocessing-list-get-beta)
+* [VtubeStudio - PostProcessing - Helper - Create Config Object (BETA)](#vtubestudio---postprocessing---helper---create-config-object-beta)
+* [VtubeStudio - PostProcessing Simple On/Off (BETA)](#vtubestudio---postprocessing-simple-onoff-beta)
+* [VtubeStudio - PostProcessing Set (BETA)](#vtubestudio---postprocessing-set-beta)
+* [VtubeStudio - PostProcessing Set by Preset(BETA)](#vtubestudio---postprocessing-set-by-presetbeta)
 
 * [VtubeStudio - Listen to Event](#vtubestudio---listen-to-event)
 * [VtubeStudio - Unsubscribe from Event](#vtubestudio---unsubscribe-from-event)
