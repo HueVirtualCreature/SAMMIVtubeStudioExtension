@@ -807,7 +807,7 @@ function interpretResponse(responseData) {
 			SAMMIVTS_postSAMMIMessage(responseData.messageType + " not implemented!");
 			break;
 		//#endregion
-		
+
 		case 'APIError':
 			SAMMIVTS_postSAMMIMessage("Received an error from the API: " + responseData.data.errorID + ": " + responseData.data.message);
 			break;
@@ -1168,6 +1168,122 @@ async function SAMMIVTS_getVTSAuthToken() {
 		token = tokenObj.Value; //I am not sure where this is Value, but others produce value
 	});
 	return token;
+}
+
+async function requestInputParameterList({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("InputParameterListRequest");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestSetCurrentModelPhysics({ requestID, physicsConfig }) {
+	let request = await SAMMIVTS_generateBaseRequest("SetCurrentModelPhysicsRequest");
+	request.requestID = requestID;
+	request.data.physicsConfig = physicsConfig;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestGetCurrentModelPhysics({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("GetCurrentModelPhysicsRequest");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestInjectParameterData({ requestID, parameterData }) {
+	let request = await SAMMIVTS_generateBaseRequest("InjectParameterDataRequest");
+	request.requestID = requestID;
+	request.data.parameterData = parameterData;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestParameterDeletion({ requestID, parameterName }) {
+	let request = await SAMMIVTS_generateBaseRequest("ParameterDeletionRequest");
+	request.requestID = requestID;
+	request.data.parameterName = parameterName;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestParameterCreation({ requestID, parameterConfig }) {
+	let request = await SAMMIVTS_generateBaseRequest("ParameterCreationRequest");
+	request.requestID = requestID;
+	request.data.parameterConfig = parameterConfig;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestLive2DParameterList({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("Live2DParameterListRequest");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestParameterValue({ requestID, parameterName }) {
+	let request = await SAMMIVTS_generateBaseRequest("ParameterValueRequest");
+	request.requestID = requestID;
+	request.data.parameterName = parameterName;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestVTubeStudioAPIStateBroadcast({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("VTubeStudioAPIStateBroadcast");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestFaceFound({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("FaceFoundRequest");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestSceneColorOverlayInfo({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("SceneColorOverlayInfoRequest");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestColorTint({ requestID, colorTintConfig }) {
+	let request = await SAMMIVTS_generateBaseRequest("ColorTintRequest");
+	request.requestID = requestID;
+	request.data.colorTintConfig = colorTintConfig;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestArtMeshList({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("ArtMeshListRequest");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestArtMeshSelection({ requestID, artMeshSelectionConfig }) {
+	let request = await SAMMIVTS_generateBaseRequest("ArtMeshSelectionRequest");
+	request.requestID = requestID;
+	request.data.artMeshSelectionConfig = artMeshSelectionConfig;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestVTSFolderInfo({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("VTSFolderInfoRequest");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestNDIConfig({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("NDIConfigRequest");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestAPIState({ requestID }) {
+	let request = await SAMMIVTS_generateBaseRequest("APIStateRequest");
+	request.requestID = requestID;
+	sendMessageToVtubeStudio(request);
+}
+
+async function requestItemPin({ requestID, itemPinConfig }) {
+	let request = await SAMMIVTS_generateBaseRequest("ItemPinRequest");
+	request.requestID = requestID;
+	request.data.itemPinConfig = itemPinConfig;
+	sendMessageToVtubeStudio(request);
 }
 
 //TODO Move to private space
