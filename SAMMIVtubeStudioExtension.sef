@@ -784,6 +784,30 @@ function interpretResponse(responseData) {
 			}
 			break;
 		//#endregion Event Subscriptions
+
+		//#region Unimplemented Responses
+		case "InputParameterListResponse":
+		case "SetCurrentModelPhysicsResponse":
+		case "GetCurrentModelPhysicsResponse":
+		case "InjectParameterDataResponse":
+		case "ParameterDeletionResponse":
+		case "ParameterCreationResponse":
+		case "Live2DParameterListResponse":
+		case "ParameterValueResponse":
+		case "VTubeStudioAPIStateBroadcast":
+		case "FaceFoundResponse":
+		case "SceneColorOverlayInfoResponse":
+		case "ColorTintResponse":
+		case "ArtMeshListResponse":
+		case "ArtMeshSelectionResponse":
+		case "VTSFolderInfoResponse":
+		case "NDIConfigResponse":
+		case "APIStateResponse":
+		case "ItemPinResponse":
+			SAMMIVTS_postSAMMIMessage(responseData.messageType + " not implemented!");
+			break;
+		//#endregion
+		
 		case 'APIError':
 			SAMMIVTS_postSAMMIMessage("Received an error from the API: " + responseData.data.errorID + ": " + responseData.data.message);
 			break;
