@@ -265,11 +265,93 @@ function SAMMIVTS_insertBaseCommands() {
 		ExpressionFile: ["Expression File Name", 14, ""],
 		Active: ["Turn On? (true/false)", 15, "false"]
 	});
+
+	//region new untested
+	SAMMI.extCommand("VtubeStudio - Get Input Parameter List", 3355443, 80, {
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Set Current Model Physics", 3355443, 80, {
+		physicsConfig: ["Physics Config (object/JSON)", 14, ""],
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get Current Model Physics", 3355443, 80, {
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Set Inject Parameter Data", 3355443, 80, {
+		parameterData: ["Parameter Data (object/JSON)", 14, ""],
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Set Parameter Deletion", 3355443, 80, {
+		parameterName: ["Parameter Name", 14, ""],
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Set Parameter Creation", 3355443, 80, {
+		parameterConfig: ["Parameter Config (object/JSON)", 14, ""],
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get Live2D Parameter List", 3355443, 80, {
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get Parameter Value", 3355443, 80, {
+		parameterName: ["Parameter Name", 14, ""],
+		variable: saveAsVariableBox
+	});
+
+	//TODO This command is strange
+	// SAMMI.extCommand("VtubeStudio - Get API State Broadcast", 3355443, 80, {
+	// 	variable: saveAsVariableBox
+	// });
+
+	SAMMI.extCommand("VtubeStudio - Get Face Found", 3355443, 80, {
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get Scene Color Overlay Info", 3355443, 80, {
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Set Color Tint", 3355443, 80, {
+		colorTintConfig: ["Color Tint Config (object/JSON)", 14, ""],
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get Art Mesh List", 3355443, 80, {
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Set Art Mesh Selection", 3355443, 80, {
+		artMeshSelectionConfig: ["Art Mesh Selection Config (object/JSON)", 14, ""],
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get VTS Folder Info", 3355443, 80, {
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get NDI Config", 3355443, 80, {
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Get API State", 3355443, 80, {
+		variable: saveAsVariableBox
+	});
+
+	SAMMI.extCommand("VtubeStudio - Set Item Pin", 3355443, 80, {
+		itemPinConfig: ["Item Pin Config (object/JSON)", 14, ""],
+		variable: saveAsVariableBox
+	});
+	//endregion new untested
 }
 //#endregion
 
-//#region Insert Hooks
-//(We don't call them that anymore)
+//#region Insert command listeners
 //TODO Move to private space
 function SAMMIVTS_insertCommandHooks() {
 	sammiclient.on('VtubeStudio - Request Token', async (json) => {
@@ -644,6 +726,224 @@ function SAMMIVTS_insertCommandHooks() {
 		requestPostProcessingUpdateRequest({requestID: requestID, data: data});
 	});
 	//#endregion Hooks: PostProcessing VFX
+
+	//region NEW
+	sammiclient.on('VtubeStudio - Get Input Parameter List', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestInputParameterList({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Set Current Model Physics', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestSetCurrentModelPhysics({ requestID, physicsConfig: SAMMIJSON.physicsConfig });
+	});
+
+	sammiclient.on('VtubeStudio - Get Current Model Physics', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestGetCurrentModelPhysics({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Set Inject Parameter Data', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestInjectParameterData({ requestID, parameterData: SAMMIJSON.parameterData });
+	});
+
+	sammiclient.on('VtubeStudio - Set Parameter Deletion', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestParameterDeletion({ requestID, parameterName: SAMMIJSON.parameterName });
+	});
+
+	sammiclient.on('VtubeStudio - Set Parameter Creation', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestParameterCreation({ requestID, parameterConfig: SAMMIJSON.parameterConfig });
+	});
+
+	sammiclient.on('VtubeStudio - Get Live2D Parameter List', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestLive2DParameterList({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Get Parameter Value', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestParameterValue({ requestID, parameterName: SAMMIJSON.parameterName });
+	});
+
+	sammiclient.on('VtubeStudio - Get API State Broadcast', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestVTubeStudioAPIStateBroadcast({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Get Face Found', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestFaceFound({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Get Scene Color Overlay Info', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestSceneColorOverlayInfo({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Set Color Tint', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestColorTint({ requestID, colorTintConfig: SAMMIJSON.colorTintConfig });
+	});
+
+	sammiclient.on('VtubeStudio - Get Art Mesh List', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestArtMeshList({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Set Art Mesh Selection', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestArtMeshSelection({ requestID, artMeshSelectionConfig: SAMMIJSON.artMeshSelectionConfig });
+	});
+
+	sammiclient.on('VtubeStudio - Get VTS Folder Info', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestVTSFolderInfo({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Get NDI Config', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestNDIConfig({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Get API State', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestAPIState({ requestID });
+	});
+
+	sammiclient.on('VtubeStudio - Set Item Pin', async (json) => {
+		const SAMMIJSON = json.Data;
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		requestItemPin({ requestID, itemPinConfig: SAMMIJSON.itemPinConfig });
+	});
+	//endregion NEW
 }
 //#endregion
 
@@ -749,22 +1049,50 @@ function interpretResponse(responseData) {
 				//SAMMIVTS_postSAMMIMessage("ItemMoveResponse SUCCESS");
 			}
 			break;
+
+		case "ExpressionActivationResponse":
+			//Nothing happens with this
+			//https://github.com/DenchiSoft/VTubeStudio#requesting-activation-or-deactivation-of-expressions
+			SAMMIVTS_postSAMMIMessage(`Triggered Expression`);
+			break;
+
+		//region Responses with Callback
 		case "ItemListResponse":
 		case "CurrentModelResponse":
 		case "StatisticsResponse":
 		case "ExpressionStateResponse":
 		case "PostProcessingListResponse":
 		case "PostProcessingUpdateResponse":
+		case "InputParameterListResponse":
+		case "SceneColorOverlayInfoResponse":
+		case "VTubeStudioAPIStateBroadcast":
+		case "APIStateResponse":
+		case "VTSFolderInfoResponse":
+		case "ArtMeshListResponse":
+		case "FaceFoundResponse":
+		case "Live2DParameterListResponse":
+		case "GetCurrentModelPhysicsResponse":
 			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
 				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
 				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
 			}
 			break;
-		case "ExpressionActivationResponse":
-			//Nothing happens with this
-			//https://github.com/DenchiSoft/VTubeStudio#requesting-activation-or-deactivation-of-expressions
-			SAMMIVTS_postSAMMIMessage(`Triggered Expression`);
+		//endregion Responses with Callback
+		
+		//#region Unimplemented Responses
+		case "SetCurrentModelPhysicsResponse":
+		case "InjectParameterDataResponse":
+		case "ParameterDeletionResponse":
+		case "ParameterCreationResponse":
+		case "ParameterValueResponse":
+		case "ColorTintResponse":
+		case "ArtMeshSelectionResponse":
+		case "NDIConfigResponse":
+		case "ItemPinResponse":
+			SAMMIVTS_postSAMMIMessage(responseData.messageType + " not implemented!");
 			break;
+		//#endregion
+
 		//#region Event Subscriptions
 		case "EventSubscriptionResponse":
 			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
@@ -784,29 +1112,6 @@ function interpretResponse(responseData) {
 			}
 			break;
 		//#endregion Event Subscriptions
-
-		//#region Unimplemented Responses
-		case "InputParameterListResponse":
-		case "SetCurrentModelPhysicsResponse":
-		case "GetCurrentModelPhysicsResponse":
-		case "InjectParameterDataResponse":
-		case "ParameterDeletionResponse":
-		case "ParameterCreationResponse":
-		case "Live2DParameterListResponse":
-		case "ParameterValueResponse":
-		case "VTubeStudioAPIStateBroadcast":
-		case "FaceFoundResponse":
-		case "SceneColorOverlayInfoResponse":
-		case "ColorTintResponse":
-		case "ArtMeshListResponse":
-		case "ArtMeshSelectionResponse":
-		case "VTSFolderInfoResponse":
-		case "NDIConfigResponse":
-		case "APIStateResponse":
-		case "ItemPinResponse":
-			SAMMIVTS_postSAMMIMessage(responseData.messageType + " not implemented!");
-			break;
-		//#endregion
 
 		case 'APIError':
 			SAMMIVTS_postSAMMIMessage("Received an error from the API: " + responseData.data.errorID + ": " + responseData.data.message);
