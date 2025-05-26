@@ -274,7 +274,7 @@ function SAMMIVTS_insertBaseCommands() {
 	});
 
 	SAMMI.extCommand("VtubeStudio - Set Current Model Physics", 3355443, 80, {
-		physicsConfig: ["Physics Config (object/JSON)", 14, ""],
+		physicsConfig: ["Physics Config (object name)", 14, ""],
 		variable: saveAsVariableBox
 	});
 
@@ -283,7 +283,7 @@ function SAMMIVTS_insertBaseCommands() {
 	});
 
 	SAMMI.extCommand("VtubeStudio - Set Inject Parameter Data", 3355443, 80, {
-		parameterData: ["Parameter Data (object/JSON)", 14, ""],
+		parameterData: ["Parameter Data (object name)", 14, ""],
 		variable: saveAsVariableBox
 	});
 
@@ -293,7 +293,7 @@ function SAMMIVTS_insertBaseCommands() {
 	});
 
 	SAMMI.extCommand("VtubeStudio - Set Parameter Creation", 3355443, 80, {
-		parameterConfig: ["Parameter Config (object/JSON)", 14, ""],
+		parameterConfig: ["Parameter Config (object name)", 14, ""],
 		variable: saveAsVariableBox
 	});
 
@@ -320,7 +320,7 @@ function SAMMIVTS_insertBaseCommands() {
 	});
 
 	SAMMI.extCommand("VtubeStudio - Set Color Tint", 3355443, 80, {
-		colorTintConfig: ["Color Tint Config (object/JSON)", 14, ""],
+		colorTintConfig: ["Color Tint Config (object name)", 14, ""],
 		variable: saveAsVariableBox
 	});
 
@@ -328,8 +328,8 @@ function SAMMIVTS_insertBaseCommands() {
 		variable: saveAsVariableBox
 	});
 
-	SAMMI.extCommand("VtubeStudio - Set Art Mesh Selection", 3355443, 80, {
-		artMeshSelectionConfig: ["Art Mesh Selection Config (object/JSON)", 14, ""],
+	SAMMI.extCommand("VtubeStudio - Request Art Mesh Selection", 3355443, 80, {
+		artMeshSelectionConfig: ["Art Mesh Selection Config (object name)", 14, ""],
 		variable: saveAsVariableBox
 	});
 
@@ -337,7 +337,8 @@ function SAMMIVTS_insertBaseCommands() {
 		variable: saveAsVariableBox
 	});
 
-	SAMMI.extCommand("VtubeStudio - Get NDI Config", 3355443, 80, {
+	SAMMI.extCommand("VtubeStudio - Request NDI Config", 3355443, 80, {
+		ndiConfig: ["NDI Config (object name)", 14, ""],
 		variable: saveAsVariableBox
 	});
 
@@ -346,7 +347,7 @@ function SAMMIVTS_insertBaseCommands() {
 	});
 
 	SAMMI.extCommand("VtubeStudio - Set Item Pin", 3355443, 80, {
-		itemPinConfig: ["Item Pin Config (object/JSON)", 14, ""],
+		itemPinConfig: ["Item Pin Config (object name)", 14, ""],
 		variable: saveAsVariableBox
 	});
 	//endregion new untested
@@ -871,7 +872,9 @@ function SAMMIVTS_insertCommandHooks() {
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 			}
 		};
-		requestColorTint({ requestID, colorTintConfig: SAMMIJSON.colorTintConfig });
+		SAMMI.getVariable(SAMMIJSON.colorTintConfig, SAMMIJSON.FromButton).then(response => {
+			requestColorTint({ requestID, data: response.value });
+		});
 	});
 
 	sammiclient.on('VtubeStudio - Get Art Mesh List', async (json) => {
@@ -886,7 +889,7 @@ function SAMMIVTS_insertCommandHooks() {
 		requestArtMeshList({ requestID });
 	});
 
-	sammiclient.on('VtubeStudio - Set Art Mesh Selection', async (json) => {
+	sammiclient.on('VtubeStudio - Request Art Mesh Selection', async (json) => {
 		const SAMMIJSON = json.Data;
 		const requestID = uuidv4();
 		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
@@ -895,7 +898,9 @@ function SAMMIVTS_insertCommandHooks() {
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 			}
 		};
-		requestArtMeshSelection({ requestID, artMeshSelectionConfig: SAMMIJSON.artMeshSelectionConfig });
+		SAMMI.getVariable(SAMMIJSON.artMeshSelectionConfig, SAMMIJSON.FromButton).then(response => {
+			requestArtMeshSelection({ requestID, data: response.value });
+		});
 	});
 
 	sammiclient.on('VtubeStudio - Get VTS Folder Info', async (json) => {
@@ -910,7 +915,7 @@ function SAMMIVTS_insertCommandHooks() {
 		requestVTSFolderInfo({ requestID });
 	});
 
-	sammiclient.on('VtubeStudio - Get NDI Config', async (json) => {
+	sammiclient.on('VtubeStudio - Request NDI Config', async (json) => {
 		const SAMMIJSON = json.Data;
 		const requestID = uuidv4();
 		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
@@ -919,7 +924,10 @@ function SAMMIVTS_insertCommandHooks() {
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 			}
 		};
-		requestNDIConfig({ requestID });
+
+		SAMMI.getVariable(SAMMIJSON.itemPinConfig, SAMMIJSON.FromButton).then(response => {
+			requestNDIConfig({ requestID, data: response.value });
+		});
 	});
 
 	sammiclient.on('VtubeStudio - Get API State', async (json) => {
@@ -1083,25 +1091,20 @@ function interpretResponse(responseData) {
 		case "Live2DParameterListResponse":
 		case "GetCurrentModelPhysicsResponse":
 		case "ItemPinResponse":
-			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
-				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
-			}
-			break;
-		//endregion Responses with Callback
-		
-		//#region Unimplemented Responses
+		case "NDIConfigResponse":
+		case "ArtMeshSelectionResponse":
 		case "SetCurrentModelPhysicsResponse":
 		case "InjectParameterDataResponse":
 		case "ParameterDeletionResponse":
 		case "ParameterCreationResponse":
 		case "ParameterValueResponse":
 		case "ColorTintResponse":
-		case "ArtMeshSelectionResponse":
-		case "NDIConfigResponse":
-			SAMMIVTS_postSAMMIMessage(responseData.messageType + " not implemented!");
+			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
+				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
+			}
 			break;
-		//#endregion
+		//endregion Responses with Callback
 
 		//#region Event Subscriptions
 		case "EventSubscriptionResponse":
@@ -1556,10 +1559,11 @@ async function requestSceneColorOverlayInfo({ requestID }) {
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestColorTint({ requestID, colorTintConfig }) {
+//https://github.com/DenchiSoft/VTubeStudio?tab=readme-ov-file#tint-artmeshes-with-color
+async function requestColorTint({ requestID, data }) {
 	let request = await SAMMIVTS_generateBaseRequest("ColorTintRequest");
 	request.requestID = requestID;
-	request.data.colorTintConfig = colorTintConfig;
+	request.data = data;
 	sendMessageToVtubeStudio(request);
 }
 
@@ -1569,10 +1573,10 @@ async function requestArtMeshList({ requestID }) {
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestArtMeshSelection({ requestID, artMeshSelectionConfig }) {
+async function requestArtMeshSelection({ requestID, data }) {
 	let request = await SAMMIVTS_generateBaseRequest("ArtMeshSelectionRequest");
 	request.requestID = requestID;
-	request.data.artMeshSelectionConfig = artMeshSelectionConfig;
+	request.data = data;
 	sendMessageToVtubeStudio(request);
 }
 
@@ -1582,9 +1586,10 @@ async function requestVTSFolderInfo({ requestID }) {
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestNDIConfig({ requestID }) {
+async function requestNDIConfig({ requestID, data }) {
 	let request = await SAMMIVTS_generateBaseRequest("NDIConfigRequest");
 	request.requestID = requestID;
+	request.data = data;
 	sendMessageToVtubeStudio(request);
 }
 
