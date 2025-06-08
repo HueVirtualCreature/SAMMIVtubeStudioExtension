@@ -274,7 +274,7 @@ function SAMMIVTS_insertBaseCommands() {
 	});
 
 	SAMMI.extCommand("VtubeStudio - Set Current Model Physics", 3355443, 80, {
-		physicsConfig: ["Physics Config (object name)", 14, ""],
+		config: ["Physics Config (object name)", 14, ""],
 		variable: saveAsVariableBox
 	});
 
@@ -282,13 +282,13 @@ function SAMMIVTS_insertBaseCommands() {
 		variable: saveAsVariableBox
 	});
 
-	SAMMI.extCommand("VtubeStudio - Set Inject Parameter Data", 3355443, 80, {
-		parameterData: ["Parameter Data (object name)", 14, ""],
+	SAMMI.extCommand("VtubeStudio - Inject Parameter Data", 3355443, 80, {
+		config: ["Parameter Data (object name)", 14, ""],
 		variable: saveAsVariableBox
 	});
 
 	SAMMI.extCommand("VtubeStudio - Set Parameter Deletion", 3355443, 80, {
-		parameterName: ["Parameter Name", 14, ""],
+		config: ["Config", 14, ""],
 		variable: saveAsVariableBox
 	});
 
@@ -357,6 +357,20 @@ function SAMMIVTS_insertBaseCommands() {
 //#region Insert command listeners
 //TODO Move to private space
 function SAMMIVTS_insertCommandHooks() {
+	//TODO Test and Implement
+	const postCommandHandler = (SAMMIJSON, requestFunc) => {
+		const requestID = uuidv4();
+		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
+			if (!!SAMMIJSON.variable) {
+				let buttonID = SAMMIJSON.FromButton;
+				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
+			}
+		};
+		SAMMI.getVariable(SAMMIJSON.config, SAMMIJSON.FromButton).then(response => {
+			requestFunc({ requestID, data: response.value });
+		});
+	}
+
 	sammiclient.on('VtubeStudio - Request Token', async (json) => {
 		const data = json.Data;
 		//Request a token from the VTS server and save the token it replies with to a Global variable
@@ -752,7 +766,9 @@ function SAMMIVTS_insertCommandHooks() {
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 			}
 		};
-		requestSetCurrentModelPhysics({ requestID, physicsConfig: SAMMIJSON.physicsConfig });
+		SAMMI.getVariable(SAMMIJSON.config, SAMMIJSON.FromButton).then(response => {
+			requestSetCurrentModelPhysics({ requestID, data: response.value });
+		});
 	});
 
 	sammiclient.on('VtubeStudio - Get Current Model Physics', async (json) => {
@@ -767,7 +783,7 @@ function SAMMIVTS_insertCommandHooks() {
 		requestGetCurrentModelPhysics({ requestID });
 	});
 
-	sammiclient.on('VtubeStudio - Set Inject Parameter Data', async (json) => {
+	sammiclient.on('VtubeStudio - Inject Parameter Data', async (json) => {
 		const SAMMIJSON = json.Data;
 		const requestID = uuidv4();
 		window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][requestID] = (data) => {
@@ -776,7 +792,9 @@ function SAMMIVTS_insertCommandHooks() {
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 			}
 		};
-		requestInjectParameterData({ requestID, parameterData: SAMMIJSON.parameterData });
+		SAMMI.getVariable(SAMMIJSON.config, SAMMIJSON.FromButton).then(response => {
+			requestInjectParameterData({ requestID, data: response.value });
+		});
 	});
 
 	sammiclient.on('VtubeStudio - Set Parameter Deletion', async (json) => {
@@ -788,7 +806,9 @@ function SAMMIVTS_insertCommandHooks() {
 				SAMMI.setVariable(SAMMIJSON.variable, data, buttonID);
 			}
 		};
-		requestParameterDeletion({ requestID, parameterName: SAMMIJSON.parameterName });
+		SAMMI.getVariable(SAMMIJSON.config, SAMMIJSON.FromButton).then(response => {
+			requestParameterDeletion({ requestID, data: response.value });
+		});
 	});
 
 	sammiclient.on('VtubeStudio - Set Parameter Creation', async (json) => {
@@ -955,9 +975,7 @@ function SAMMIVTS_insertCommandHooks() {
 		SAMMI.getVariable(SAMMIJSON.itemPinConfig, SAMMIJSON.FromButton).then(response => {
 			requestItemPin({
 				requestID,
-				data: {
-					...response.value
-				}
+				data: response.value
 			});
 		});
 	});
@@ -1027,14 +1045,7 @@ function interpretResponse(responseData) {
 				  });
 			}
 			break;
-		case "HotkeyTriggerResponse":
-			SAMMIVTS_postSAMMIMessage(`Triggered hotkey`);
-			break;
-		case "ModelLoadResponse":
-			SAMMIVTS_postSAMMIMessage(`Model loaded`);
-			break;
-		case "MoveModelResponse":
-			break;
+		
 		case "ItemLoadResponse":
 			if (responseData.data && responseData.data.instanceID) {
 				//SAMMIVTS_postConsoleMessage("ItemListResponse SUCCESS: " + responseData.data.instanceID)
@@ -1057,6 +1068,15 @@ function interpretResponse(responseData) {
 				}
 			}
 			break;
+
+		case "HotkeyTriggerResponse":
+			SAMMIVTS_postSAMMIMessage(`Triggered hotkey`);
+			break;
+		case "ModelLoadResponse":
+			SAMMIVTS_postSAMMIMessage(`Model loaded`);
+			break;
+		case "MoveModelResponse":
+			break;
 		case "ItemAnimationControlResponse":
 			if (responseData.data && responseData.data.animationPlaying !== undefined) {
 				//SAMMIVTS_postSAMMIMessage("ItemAnimationControlResponse SUCCESS");
@@ -1067,7 +1087,6 @@ function interpretResponse(responseData) {
 				//SAMMIVTS_postSAMMIMessage("ItemMoveResponse SUCCESS");
 			}
 			break;
-
 		case "ExpressionActivationResponse":
 			//Nothing happens with this
 			//https://github.com/DenchiSoft/VTubeStudio#requesting-activation-or-deactivation-of-expressions
@@ -1099,6 +1118,7 @@ function interpretResponse(responseData) {
 		case "ParameterCreationResponse":
 		case "ParameterValueResponse":
 		case "ColorTintResponse":
+		case "EventSubscriptionResponse":
 			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
 				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
 				window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
@@ -1107,12 +1127,6 @@ function interpretResponse(responseData) {
 		//endregion Responses with Callback
 
 		//#region Event Subscriptions
-		case "EventSubscriptionResponse":
-			if (window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID]) {
-						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID](responseData.data);
-						window[`${VTUBESTUDIO_PLUGINNAME}_OnMessageRecievedFunctions`][responseData.requestID] = undefined;
-				}
-			break;
 		case "TestEvent":
 		case "ModelLoadedEvent":
 		case "TrackingStatusChangedEvent":
@@ -1494,10 +1508,10 @@ async function requestInputParameterList({ requestID }) {
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestSetCurrentModelPhysics({ requestID, physicsConfig }) {
+async function requestSetCurrentModelPhysics({ requestID, data }) {
 	let request = await SAMMIVTS_generateBaseRequest("SetCurrentModelPhysicsRequest");
 	request.requestID = requestID;
-	request.data.physicsConfig = physicsConfig;
+	request.data = data;
 	sendMessageToVtubeStudio(request);
 }
 
@@ -1507,17 +1521,17 @@ async function requestGetCurrentModelPhysics({ requestID }) {
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestInjectParameterData({ requestID, parameterData }) {
+async function requestInjectParameterData({ requestID, data }) {
 	let request = await SAMMIVTS_generateBaseRequest("InjectParameterDataRequest");
 	request.requestID = requestID;
-	request.data.parameterData = parameterData;
+	request.data.parameterData = data;
 	sendMessageToVtubeStudio(request);
 }
 
-async function requestParameterDeletion({ requestID, parameterName }) {
+async function requestParameterDeletion({ requestID, data }) {
 	let request = await SAMMIVTS_generateBaseRequest("ParameterDeletionRequest");
 	request.requestID = requestID;
-	request.data.parameterName = parameterName;
+	request.data = data;
 	sendMessageToVtubeStudio(request);
 }
 
